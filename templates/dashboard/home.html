@@ -1,0 +1,76 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Bosh sahifa — Admin{% endblock %}
+{% block page_heading %}Bosh sahifa{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+    <div class="card">
+        <div class="card-title">Mahsulotlar</div>
+        <div class="card-value">{{ total_products }}</div>
+    </div>
+    <div class="card">
+        <div class="card-title">Yangi buyurtmalar</div>
+        <div class="card-value">{{ new_orders }}</div>
+    </div>
+    <div class="card">
+        <div class="card-title">Jami buyurtmalar</div>
+        <div class="card-value">{{ total_orders }}</div>
+    </div>
+    <div class="card">
+        <div class="card-title">Portfolio</div>
+        <div class="card-value">{{ total_portfolio }}</div>
+    </div>
+</div>
+
+<div class="page-header">
+    <h2>So'nggi buyurtmalar</h2>
+    <a href="{% url 'dashboard_order_list' %}" class="btn btn-outline btn-sm">Barchasi →</a>
+</div>
+
+<div class="card" style="padding:0;overflow:hidden;">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Ism</th>
+                    <th>Telefon</th>
+                    <th>Mahsulot</th>
+                    <th>Holat</th>
+                    <th>Sana</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in recent_orders %}
+                <tr>
+                    <td>{{ order.name }}</td>
+                    <td><a href="tel:{{ order.phone }}" style="color:var(--gold);text-decoration:none;">{{ order.phone }}</a></td>
+                    <td>{% if order.product %}{{ order.product.name }}{% else %}—{% endif %}</td>
+                    <td>
+                        {% if order.status == 'new' %}<span class="badge badge-new">Yangi</span>
+                        {% elif order.status == 'done' %}<span class="badge badge-done">Bajarildi</span>
+                        {% else %}<span class="badge">{{ order.get_status_display }}</span>{% endif %}
+                    </td>
+                    <td style="color:var(--gray);">{{ order.created_at|date:"d.m.Y H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" style="text-align:center;color:var(--gray);padding:2rem;">Buyurtmalar yo'q</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% if categories %}
+<div class="page-header" style="margin-top:2rem;">
+    <h2>Kategoriyalar bo'yicha</h2>
+</div>
+<div class="stats-grid">
+    {% for cat in categories %}
+    <div class="card">
+        <div class="card-title">{{ cat.icon }} {{ cat.name }}</div>
+        <div class="card-value">{{ cat.product_count }}</div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'dashboard/base.html' %}
+{% block page_heading %}Mijoz fikrlari{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h2>Fikrlar</h2>
+    <a href="{% url 'dashboard_review_add' %}" class="btn btn-gold">+ Qo'shish</a>
+</div>
+<div class="card" style="padding:0;">
+    <table>
+        <thead><tr><th>Ism</th><th>Baho</th><th>Fikr</th><th>Holat</th><th></th></tr></thead>
+        <tbody>
+            {% for r in reviews %}
+            <tr>
+                <td><strong>{{ r.name }}</strong></td>
+                <td>{% for i in '12345' %}{% if forloop.counter <= r.rating %}⭐{% endif %}{% endfor %}</td>
+                <td style="max-width:300px;color:var(--gray);">{{ r.text|truncatechars:80 }}</td>
+                <td>{% if r.is_active %}<span class="badge badge-done">Ko'rinadi</span>{% else %}Yashirin{% endif %}</td>
+                <td>
+                    <form method="POST" action="{% url 'dashboard_review_delete' r.pk %}" onsubmit="return confirm('O\'chirish?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">O'chir</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--gray);">Fikr yo'q</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

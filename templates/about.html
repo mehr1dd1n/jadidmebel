@@ -1,0 +1,283 @@
+{% extends 'main/base.html' %}
+{% load jm_i18n %}
+{% block title %}{% t 'about.title' %}{% endblock %}
+
+{% block extra_head %}
+<style>
+.about-hero {
+    background: var(--charcoal);
+    padding: 6rem 5%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+}
+.about-hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 4vw, 4rem);
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1.15;
+    margin-bottom: 1.5rem;
+}
+.about-hero h1 em { color: var(--gold); font-style: italic; }
+.about-hero p { color: rgba(245,240,232,0.7); line-height: 1.8; font-size: 0.95rem; }
+.about-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid var(--border);
+    padding: 0.5rem 1rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+}
+.about-hero-right {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+.about-stat-card {
+    background: rgba(200,169,110,0.07);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    transition: border-color var(--transition);
+}
+.about-stat-card:hover { border-color: var(--gold); }
+.about-stat-num {
+    font-family: var(--font-display);
+    font-size: 2.8rem;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+.about-stat-label { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(245,240,232,0.5); }
+
+.timeline {
+    padding: 6rem 5%;
+    background: var(--cream);
+}
+.timeline-items { max-width: 700px; margin: 0 auto; }
+.timeline-item {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    position: relative;
+}
+.timeline-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 39px;
+    top: 60px;
+    bottom: -1rem;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+}
+.timeline-year {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--gold);
+    padding-top: 0.5rem;
+    text-align: center;
+}
+.timeline-dot {
+    width: 12px; height: 12px;
+    background: var(--gold);
+    border-radius: 50%;
+    margin: 0 auto;
+    margin-top: 0.5rem;
+}
+.timeline-content h3 { font-family: var(--font-display); font-size: 1.3rem; font-weight: 600; color: var(--charcoal); margin-bottom: 0.5rem; }
+.timeline-content p { color: var(--gray); font-size: 0.875rem; line-height: 1.7; }
+
+.team-section { padding: 6rem 5%; }
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 2rem;
+}
+.team-card { text-align: center; }
+.team-avatar {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+    background: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    border: 3px solid var(--border);
+}
+.team-name { font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; color: var(--charcoal); margin-bottom: 0.4rem; }
+.team-role { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; }
+.team-desc { font-size: 0.875rem; color: var(--gray); line-height: 1.6; }
+
+.values-section { padding: 6rem 5%; background: var(--charcoal); }
+.values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; }
+.value-item { border-left: 2px solid var(--gold); padding-left: 1.5rem; }
+.value-title { font-family: var(--font-display); font-size: 1.3rem; color: var(--cream); margin-bottom: 0.75rem; }
+.value-text { color: rgba(245,240,232,0.6); font-size: 0.875rem; line-height: 1.7; }
+
+@media (max-width: 768px) {
+    .about-hero { grid-template-columns: 1fr; }
+    .about-hero-right { grid-template-columns: 1fr 1fr; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="about-hero">
+    <div class="reveal">
+        <div class="about-hero-badge">🏆 {% t 'about.badge' %}</div>
+        <h1>Jadid <em>Mebel</em> {% t 'about.heading' %}</h1>
+        <p>{{ settings|tfield:'about_text' }}</p>
+        <br>
+        <p style="color:rgba(245,240,232,0.7);line-height:1.8;font-size:0.95rem;">
+            Biz har bir mebelni sanʼat asari sifatida ko'ramiz. Mijozimizning orzusi va tasavvuridagi
+            interyer bizning hunarmandlik texnikamiz va zamonaviy uskunalarimiz orqali hayotga tatbiq etiladi.
+        </p>
+    </div>
+    <div class="about-hero-right reveal">
+        <div class="about-stat-card">
+            <div class="about-stat-num">2018</div>
+            <div class="about-stat-label">Tashkil topgan yil</div>
+        </div>
+        <div class="about-stat-card">
+            <div class="about-stat-num">1200+</div>
+            <div class="about-stat-label">Bajarilgan buyurtmalar</div>
+        </div>
+        <div class="about-stat-card">
+            <div class="about-stat-num">25+</div>
+            <div class="about-stat-label">Professional usta</div>
+        </div>
+        <div class="about-stat-card">
+            <div class="about-stat-num">100%</div>
+            <div class="about-stat-label">Kafolat berilgan</div>
+        </div>
+    </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="timeline">
+    <div class="section-head reveal">
+        <div class="section-label">Tariximiz</div>
+        <h2 class="section-title">Bizning yo'limiz</h2>
+    </div>
+    <div class="timeline-items">
+        <div class="timeline-item reveal">
+            <div>
+                <div class="timeline-year">2018</div>
+                <div class="timeline-dot"></div>
+            </div>
+            <div class="timeline-content">
+                <h3>Boshlanish</h3>
+                <p>Jadid Mebel 3 nafar usta bilan kichik ustaxonada ishni boshladi. Birinchi mebel —
+                   yog'ochdan yasalgan oshxona stoli bo'ldi.</p>
+            </div>
+        </div>
+        <div class="timeline-item reveal">
+            <div>
+                <div class="timeline-year">2020</div>
+                <div class="timeline-dot"></div>
+            </div>
+            <div class="timeline-content">
+                <h3>Kengayish</h3>
+                <p>Zamonaviy dastgohlar va 15 nafar mutaxassis bilan yangi katta ishlab chiqarish zaliga ko'chib o'tdik.
+                   Ofis mebellar liniyasi ishga tushirildi.</p>
+            </div>
+        </div>
+        <div class="timeline-item reveal">
+            <div>
+                <div class="timeline-year">2022</div>
+                <div class="timeline-dot"></div>
+            </div>
+            <div class="timeline-content">
+                <h3>Online savdo</h3>
+                <p>Rasmiy sayt va Instagram sahifasi orqali onlayn buyurtma tizimi joriy etildi.
+                   500+ mijozga xizmat ko'rsatildi.</p>
+            </div>
+        </div>
+        <div class="timeline-item reveal">
+            <div>
+                <div class="timeline-year">2024</div>
+                <div class="timeline-dot"></div>
+            </div>
+            <div class="timeline-content">
+                <h3>Bugun</h3>
+                <p>25 nafar ustamiz, zamonaviy jihozlangan ustaxonamiz va 1200+ bajarилган ishimiz bilan
+                   Toshkentning №1 mebel kompaniyalaridan biriga aylandik.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TEAM -->
+<section class="team-section">
+    <div class="section-head reveal">
+        <div class="section-label">Jamoamiz</div>
+        <h2 class="section-title">Professional ustalar</h2>
+    </div>
+    <div class="team-grid">
+        <div class="team-card reveal">
+            <div class="team-avatar">👨‍🔧</div>
+            <div class="team-name">Jasur Karimov</div>
+            <div class="team-role">Bosh direktor</div>
+            <p class="team-desc">15 yillik tajriba. Mebel sanoatida mutaxassis.</p>
+        </div>
+        <div class="team-card reveal">
+            <div class="team-avatar">👨‍🎨</div>
+            <div class="team-name">Sherzod Toshmatov</div>
+            <div class="team-role">Bosh dizayner</div>
+            <p class="team-desc">Har bir mebelni individual loyihalaydi.</p>
+        </div>
+        <div class="team-card reveal">
+            <div class="team-avatar">👷</div>
+            <div class="team-name">Behruz Nazarov</div>
+            <div class="team-role">Ishlab chiqarish boshlig'i</div>
+            <p class="team-desc">10 yillik tajriba bilan sifatni nazorat qiladi.</p>
+        </div>
+        <div class="team-card reveal">
+            <div class="team-avatar">👩‍💼</div>
+            <div class="team-name">Malika Yusupova</div>
+            <div class="team-role">Mijozlar bilan ishlash</div>
+            <p class="team-desc">Har bir buyurtmani boshidan oxirigacha kuzatadi.</p>
+        </div>
+    </div>
+</section>
+
+<!-- VALUES -->
+<section class="values-section">
+    <div class="section-head reveal">
+        <div class="section-label">Qadriyatlarimiz</div>
+        <h2 class="section-title">Biz nimaga ishonamiz</h2>
+    </div>
+    <div class="values-grid">
+        <div class="value-item reveal">
+            <div class="value-title">🌳 Ekologik toza</div>
+            <p class="value-text">Faqat sertifikatlangan, ekologik toza yog'och va materiallar ishlatamiz. Tabiatni aslaymiz.</p>
+        </div>
+        <div class="value-item reveal">
+            <div class="value-title">🎯 Sifat birinchi</div>
+            <p class="value-text">Har bir mahsulot chiqishidan oldin 12 bosqichli sifat nazoratidan o'tkaziladi.</p>
+        </div>
+        <div class="value-item reveal">
+            <div class="value-title">🤝 Ishonch</div>
+            <p class="value-text">Mijozimiz bilan ochiq va halol munosabat — bu bizning asosiy tamoyilimiz.</p>
+        </div>
+        <div class="value-item reveal">
+            <div class="value-title">💡 Innovatsiya</div>
+            <p class="value-text">Zamonaviy texnologiya va dizayn trendlarini kuzatib boramiz va qo'llaymiz.</p>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

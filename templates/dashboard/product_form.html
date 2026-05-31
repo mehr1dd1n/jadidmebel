@@ -1,0 +1,74 @@
+{% extends 'dashboard/base.html' %}
+{% block page_heading %}{{ action }}: mahsulot{% endblock %}
+{% block extra_css %}
+<style>
+.lang-tabs { display:flex; gap:0.5rem; margin-bottom:1rem; flex-wrap:wrap; }
+.lang-tab { font-size:0.75rem; padding:0.3rem 0.7rem; border-radius:4px; background:rgba(200,169,110,0.15); color:var(--gold); }
+.lang-block { border-left:2px solid var(--border); padding-left:1rem; margin-bottom:1.25rem; }
+</style>
+{% endblock %}
+{% block content %}
+<div class="card">
+    <form method="POST" enctype="multipart/form-data" class="form-grid">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Kategoriya *</label>
+            <select name="category" required>
+                {% for cat in categories %}
+                <option value="{{ cat.id }}" {% if product.category_id == cat.id %}selected{% endif %}>{{ cat.name_uz }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <p class="lang-tabs"><span class="lang-tab">🇺🇿 O'zbek</span><span class="lang-tab">🇷🇺 Rus</span><span class="lang-tab">🇬🇧 Ingliz</span></p>
+
+        <div class="lang-block">
+            <div class="form-group"><label>Nomi (O'zbek) *</label><input type="text" name="name_uz" value="{{ product.name_uz|default:'' }}" required></div>
+            <div class="form-group"><label>Tavsif (O'zbek)</label><textarea name="description_uz" rows="3">{{ product.description_uz|default:'' }}</textarea></div>
+            <div class="form-group"><label>Rang (O'zbek)</label><input type="text" name="color_uz" value="{{ product.color_uz|default:'' }}"></div>
+        </div>
+        <div class="lang-block">
+            <div class="form-group"><label>Nomi (Rus)</label><input type="text" name="name_ru" value="{{ product.name_ru|default:'' }}"></div>
+            <div class="form-group"><label>Tavsif (Rus)</label><textarea name="description_ru" rows="3">{{ product.description_ru|default:'' }}</textarea></div>
+            <div class="form-group"><label>Rang (Rus)</label><input type="text" name="color_ru" value="{{ product.color_ru|default:'' }}"></div>
+        </div>
+        <div class="lang-block">
+            <div class="form-group"><label>Nomi (Ingliz)</label><input type="text" name="name_en" value="{{ product.name_en|default:'' }}"></div>
+            <div class="form-group"><label>Tavsif (Ingliz)</label><textarea name="description_en" rows="3">{{ product.description_en|default:'' }}</textarea></div>
+            <div class="form-group"><label>Rang (Ingliz)</label><input type="text" name="color_en" value="{{ product.color_en|default:'' }}"></div>
+        </div>
+
+        <div class="form-group">
+            <label>Material</label>
+            <select name="material">
+                <option value="yogoch" {% if product.material == 'yogoch' %}selected{% endif %}>Yog'och</option>
+                <option value="mdf" {% if product.material == 'mdf' %}selected{% endif %}>MDF</option>
+                <option value="metall" {% if product.material == 'metall' %}selected{% endif %}>Metall</option>
+                <option value="shisha" {% if product.material == 'shisha' %}selected{% endif %}>Shisha</option>
+                <option value="kombinatsiya" {% if product.material == 'kombinatsiya' %}selected{% endif %}>Kombinatsiya</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Narx (so'm)</label>
+            <input type="number" name="price" value="{% if product.price %}{{ product.price|floatformat:0 }}{% endif %}" min="0" step="1000">
+        </div>
+        <div class="form-group">
+            <label>Rasm {% if not product %}*{% endif %}</label>
+            <input type="file" name="image" accept="image/*" {% if not product %}required{% endif %}>
+            {% if product.image %}<p style="margin-top:0.5rem;"><img src="{{ product.image.url }}" class="thumb" style="width:120px;height:120px;" alt=""></p>{% endif %}
+        </div>
+        <div class="form-check">
+            <input type="checkbox" name="is_featured" id="featured" {% if product.is_featured %}checked{% endif %}>
+            <label for="featured">Asosiy sahifada</label>
+        </div>
+        <div class="form-check">
+            <input type="checkbox" name="is_active" id="active" {% if product.is_active or not product %}checked{% endif %}>
+            <label for="active">Faol</label>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-gold">💾 Saqlash</button>
+            <a href="{% url 'dashboard_product_list' %}" class="btn btn-outline">Bekor</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

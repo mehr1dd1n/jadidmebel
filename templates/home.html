@@ -1,0 +1,461 @@
+{% extends 'main/base.html' %}
+{% load jm_i18n %}
+{% block title %}{% t 'home.meta_title' %}{% endblock %}
+
+{% block extra_head %}
+<style>
+/* ─── HERO ─── */
+.hero {
+    min-height: 92vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    background: var(--charcoal);
+}
+.hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 70% 70% at 80% 50%, rgba(200,169,110,0.08) 0%, transparent 70%),
+        linear-gradient(135deg, #0F0F0D 0%, #1A1A18 50%, #0F0F0D 100%);
+}
+.hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(rgba(200,169,110,0.04) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(200,169,110,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+}
+.hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 0 5%;
+    max-width: 700px;
+}
+.hero-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.hero-label::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: var(--gold);
+}
+.hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+}
+.hero-title em {
+    color: var(--gold);
+    font-style: italic;
+}
+.hero-desc {
+    font-size: 1rem;
+    color: rgba(245,240,232,0.65);
+    line-height: 1.7;
+    margin-bottom: 3rem;
+    max-width: 500px;
+}
+.hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+.hero-stats {
+    position: absolute;
+    bottom: 4rem;
+    right: 5%;
+    display: flex;
+    gap: 3rem;
+    z-index: 2;
+}
+.hero-stat { text-align: right; }
+.hero-stat-num {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+}
+.hero-stat-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.5);
+}
+
+/* ─── MARQUEE ─── */
+.marquee-bar {
+    background: var(--gold);
+    padding: 0.9rem 0;
+    overflow: hidden;
+}
+.marquee-track {
+    display: flex;
+    gap: 4rem;
+    animation: marquee 20s linear infinite;
+    white-space: nowrap;
+}
+.marquee-item {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--charcoal);
+    font-weight: 700;
+    flex-shrink: 0;
+}
+@keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+/* ─── FEATURED PRODUCTS ─── */
+.featured-section { background: var(--warm-white); }
+
+/* ─── WHY US ─── */
+.why-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+}
+.why-card {
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    transition: all var(--transition);
+    background: rgba(200,169,110,0.03);
+}
+.why-card:hover {
+    border-color: var(--gold);
+    background: rgba(200,169,110,0.06);
+    transform: translateY(-4px);
+}
+.why-icon {
+    font-size: 2.2rem;
+    margin-bottom: 1.2rem;
+    display: block;
+}
+.why-title {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--charcoal);
+    margin-bottom: 0.75rem;
+}
+.section-dark .why-title { color: var(--cream); }
+.why-text { font-size: 0.875rem; color: var(--gray); line-height: 1.7; }
+.section-dark .why-text { color: rgba(245,240,232,0.6); }
+
+/* ─── ABOUT STRIP ─── */
+.about-strip {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 420px;
+    background: var(--cream);
+}
+.about-strip-left {
+    background: var(--wood);
+    display: flex;
+    align-items: center;
+    padding: 5rem;
+    position: relative;
+    overflow: hidden;
+}
+.about-strip-left::after {
+    content: '🪑';
+    position: absolute;
+    bottom: -20px;
+    right: -20px;
+    font-size: 10rem;
+    opacity: 0.1;
+}
+.about-strip-text {
+    position: relative;
+    z-index: 1;
+}
+.about-strip-right {
+    padding: 5rem 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.about-strip-stat {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+.about-strip-num {
+    font-family: var(--font-display);
+    font-size: 3.5rem;
+    font-weight: 300;
+    color: var(--gold);
+}
+.about-strip-unit {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--wood-light);
+}
+.about-strip-desc { font-size: 0.8rem; color: var(--gray); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 2.5rem; }
+
+/* ─── REVIEWS ─── */
+.reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+.review-card {
+    background: rgba(245,240,232,0.05);
+    border: 1px solid rgba(200,169,110,0.15);
+    border-radius: 4px;
+    padding: 2rem;
+    transition: border-color var(--transition);
+}
+.review-card:hover { border-color: var(--gold); }
+.review-stars {
+    color: var(--gold);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    letter-spacing: 0.1em;
+}
+.review-text {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: rgba(245,240,232,0.75);
+    margin-bottom: 1.5rem;
+    font-style: italic;
+}
+.review-author {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--cream);
+}
+
+@media (max-width: 768px) {
+    .about-strip { grid-template-columns: 1fr; }
+    .about-strip-left { padding: 3rem 4%; }
+    .about-strip-right { padding: 3rem 4%; }
+    .hero-stats { display: none; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+
+    <div class="hero-content">
+        <div class="hero-label">{% t 'home.hero.label' %}</div>
+        <h1 class="hero-title">
+            {% t 'home.hero.title1' %}<br>
+            <em>{% t 'home.hero.title2' %}</em><br>
+            {% t 'home.hero.title3' %}
+        </h1>
+        <p class="hero-desc">{% t 'home.hero.desc' %}</p>
+        <div class="hero-btns">
+            <a href="{% url 'products' %}" class="btn btn-gold">{% t 'home.hero.cta_products' %}</a>
+            <a href="{{ settings.telegram }}" target="_blank" class="btn btn-outline" style="color:var(--cream);border-color:rgba(245,240,232,0.4);">
+                {% t 'home.hero.cta_tg' %}
+            </a>
+        </div>
+    </div>
+
+    <div class="hero-stats">
+        <div class="hero-stat">
+            <div class="hero-stat-num">6+</div>
+            <div class="hero-stat-label">{% t 'home.stat.years' %}</div>
+        </div>
+        <div class="hero-stat">
+            <div class="hero-stat-num">1200+</div>
+            <div class="hero-stat-label">{% t 'home.stat.works' %}</div>
+        </div>
+        <div class="hero-stat">
+            <div class="hero-stat-num">100%</div>
+            <div class="hero-stat-label">{% t 'home.stat.guarantee' %}</div>
+        </div>
+    </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-bar">
+    <div class="marquee-track">
+        {% for i in '12345678'|make_list %}
+        <span class="marquee-item">✦ Jadid Mebel</span>
+        <span class="marquee-item">✦ Sifatli ishlov</span>
+        <span class="marquee-item">✦ Tezkor yetkazib berish</span>
+        <span class="marquee-item">✦ 1 yil kafolat</span>
+        <span class="marquee-item">✦ Maxsus buyurtma</span>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- FEATURED PRODUCTS -->
+{% if featured_products %}
+<section class="section featured-section">
+    <div class="section-head reveal">
+        <div class="section-label">{% t 'home.featured.label' %}</div>
+        <h2 class="section-title">{% t 'home.featured.title' %}</h2>
+    </div>
+    <div class="products-grid">
+        {% for product in featured_products %}
+        <div class="product-card reveal">
+            <div class="product-card-img-wrap">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product|tfield:'name' }}" class="product-card-img">
+                {% else %}
+                <div class="product-card-img" style="display:flex;align-items:center;justify-content:center;font-size:4rem;">🪑</div>
+                {% endif %}
+                <span class="product-badge">{{ product.category.icon }} {{ product.category|tfield:'name' }}</span>
+            </div>
+            <div class="product-card-body">
+                <div class="product-card-cat">{{ product.get_material_display }}</div>
+                <div class="product-card-name">{{ product|tfield:'name' }}</div>
+                <div class="product-card-meta">
+                    {% if product|tfield:'color' %}{% t 'common.color' %}: {{ product|tfield:'color' }} · {% endif %}
+                    {% t 'common.material' %}: {{ product.get_material_display }}
+                </div>
+                <div class="product-card-price">{{ product.get_price_display }}</div>
+                <div class="product-card-actions">
+                    <a href="{% url 'product_detail' product.pk %}" class="btn btn-primary btn-sm">{% t 'common.details' %}</a>
+                    <a href="{{ settings.telegram }}" target="_blank" class="btn btn-outline btn-sm">{% t 'common.order_tg' %}</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div style="text-align:center;margin-top:3rem;">
+        <a href="{% url 'products' %}" class="btn btn-outline">{% t 'common.view_all' %}</a>
+    </div>
+</section>
+{% endif %}
+
+<!-- WHY US -->
+<section class="section section-dark">
+    <div class="section-head reveal">
+        <div class="section-label">{% t 'home.why.label' %}</div>
+        <h2 class="section-title">{% t 'home.why.title' %}</h2>
+    </div>
+    <div class="why-grid">
+        <div class="why-card reveal">
+            <span class="why-icon">🏆</span>
+            <div class="why-title">{% t 'home.why.1t' %}</div>
+            <p class="why-text">{% t 'home.why.1d' %}</p>
+        </div>
+        <div class="why-card reveal">
+            <span class="why-icon">🌳</span>
+            <div class="why-title">{% t 'home.why.2t' %}</div>
+            <p class="why-text">{% t 'home.why.2d' %}</p>
+        </div>
+        <div class="why-card reveal">
+            <span class="why-icon">⚡</span>
+            <div class="why-title">{% t 'home.why.3t' %}</div>
+            <p class="why-text">{% t 'home.why.3d' %}</p>
+        </div>
+        <div class="why-card reveal">
+            <span class="why-icon">🛡️</span>
+            <div class="why-title">{% t 'home.why.4t' %}</div>
+            <p class="why-text">{% t 'home.why.4d' %}</p>
+        </div>
+        <div class="why-card reveal">
+            <span class="why-icon">🎨</span>
+            <div class="why-title">{% t 'home.why.5t' %}</div>
+            <p class="why-text">{% t 'home.why.5d' %}</p>
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT STRIP -->
+<div class="about-strip">
+    <div class="about-strip-left">
+        <div class="about-strip-text">
+            <div class="section-label" style="color:rgba(255,255,255,0.6);">{% t 'home.about.label' %}</div>
+            <h2 class="section-title" style="color:#fff;font-size:2.2rem;margin-bottom:1.5rem;">
+                {% t 'home.about.title' %}
+            </h2>
+            <p style="color:rgba(255,255,255,0.75);line-height:1.7;margin-bottom:2rem;font-size:0.9rem;">
+                {{ settings|tfield:'about_text'|truncatechars:200 }}
+            </p>
+            <a href="{% url 'about' %}" class="btn" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3);">
+                {% t 'home.about.more' %}
+            </a>
+        </div>
+    </div>
+    <div class="about-strip-right">
+        <div>
+            <div class="about-strip-stat">
+                <span class="about-strip-num">6</span>
+                <span class="about-strip-unit">yil</span>
+            </div>
+            <div class="about-strip-desc">{% t 'home.about.exp' %}</div>
+        </div>
+        <div>
+            <div class="about-strip-stat">
+                <span class="about-strip-num">1200</span>
+                <span class="about-strip-unit">+</span>
+            </div>
+            <div class="about-strip-desc">{% t 'home.about.orders' %}</div>
+        </div>
+        <div>
+            <div class="about-strip-stat">
+                <span class="about-strip-num">25</span>
+                <span class="about-strip-unit">+</span>
+            </div>
+            <div class="about-strip-desc">{% t 'home.about.team' %}</div>
+        </div>
+    </div>
+</div>
+
+<!-- REVIEWS -->
+{% if reviews %}
+<section class="section section-dark">
+    <div class="section-head reveal">
+        <div class="section-label">{% t 'home.reviews.label' %}</div>
+        <h2 class="section-title">{% t 'home.reviews.title' %}</h2>
+    </div>
+    <div class="reviews-grid">
+        {% for review in reviews %}
+        <div class="review-card reveal">
+            <div class="review-stars">
+                {% for i in '12345'|make_list %}
+                    {% if forloop.counter <= review.rating %}⭐{% endif %}
+                {% endfor %}
+            </div>
+            <p class="review-text">"{{ review.text }}"</p>
+            <div class="review-author">— {{ review.name }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- CTA -->
+<section class="section" style="background:var(--cream);text-align:center;">
+    <div class="reveal">
+        <div class="section-label">{% t 'home.cta.label' %}</div>
+        <h2 class="section-title" style="margin-bottom:1.5rem;">{% t 'home.cta.title' %}</h2>
+        <p style="color:var(--gray);margin-bottom:2.5rem;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.7;">
+            {% t 'home.cta.desc' %}
+        </p>
+        <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+            <a href="{% url 'contact' %}" class="btn btn-primary">{% t 'common.contact_btn' %}</a>
+            <a href="{{ settings.telegram }}" target="_blank" class="btn btn-outline">{% t 'common.telegram' %}</a>
+            <a href="https://wa.me/{{ settings.whatsapp|slice:'1:' }}" target="_blank" class="btn btn-outline">{% t 'common.whatsapp' %}</a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,42 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="amqp" />
+          <option value="asgiref" />
+          <option value="beautifulsoup4" />
+          <option value="billiard" />
+          <option value="celery" />
+          <option value="click" />
+          <option value="click-didyoumean" />
+          <option value="click-plugins" />
+          <option value="click-repl" />
+          <option value="cron-descriptor" />
+          <option value="Django" />
+          <option value="django-celery-beat" />
+          <option value="django-timezone-field" />
+          <option value="djangorestframework" />
+          <option value="kombu" />
+          <option value="lxml" />
+          <option value="prompt_toolkit" />
+          <option value="python-crontab" />
+          <option value="python-dateutil" />
+          <option value="redis" />
+          <option value="six" />
+          <option value="soupsieve" />
+          <option value="sqlparse" />
+          <option value="tqdm" />
+          <option value="tzdata" />
+          <option value="vine" />
+          <option value="wcwidth" />
+          <option value="django" />
+          <option value="django-model-utils" />
+          <option value="Pillow" />
+          <option value="tox" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

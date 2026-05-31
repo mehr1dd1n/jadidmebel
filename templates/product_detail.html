@@ -1,0 +1,100 @@
+{% extends 'main/base.html' %}
+{% load jm_i18n %}
+{% block title %}{{ product|tfield:'name' }} — Jadid Mebel{% endblock %}
+
+{% block extra_head %}
+<style>
+.detail-wrap { padding: 5rem 5%; display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+.detail-img-wrap { position: sticky; top: 100px; }
+.detail-img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 4px; background: var(--cream); }
+.detail-breadcrumb { font-size: 0.75rem; color: var(--gray); margin-bottom: 1.5rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.detail-breadcrumb a { color: var(--gray); text-decoration: none; }
+.detail-breadcrumb a:hover { color: var(--gold); }
+.detail-cat { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+.detail-name { font-family: var(--font-display); font-size: clamp(2rem, 3vw, 2.8rem); font-weight: 300; color: var(--charcoal); line-height: 1.2; margin-bottom: 1.5rem; }
+.detail-price { font-family: var(--font-display); font-size: 2rem; font-weight: 600; color: var(--wood); margin-bottom: 2rem; padding: 1rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.detail-desc { color: var(--gray); line-height: 1.8; margin-bottom: 2rem; }
+.detail-spec { display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--light-gray); font-size: 0.875rem; }
+.detail-spec-key { color: var(--gray); }
+.detail-spec-val { font-weight: 500; }
+.detail-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
+.order-form { background: var(--cream); border: 1px solid var(--border); border-radius: 4px; padding: 2rem; margin-top: 2rem; }
+.order-form h3 { font-family: var(--font-display); font-size: 1.4rem; margin-bottom: 1.5rem; }
+.form-group { margin-bottom: 1rem; }
+.form-group label { display: block; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray); margin-bottom: 0.5rem; }
+.form-group input, .form-group textarea { width: 100%; padding: 0.85rem 1rem; border: 1.5px solid var(--light-gray); border-radius: 2px; font-family: var(--font-body); }
+.related-section { padding: 4rem 5%; background: var(--cream); }
+@media (max-width: 768px) { .detail-wrap { grid-template-columns: 1fr; } .detail-img-wrap { position: static; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="detail-wrap">
+    <div class="detail-img-wrap reveal">
+        {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product|tfield:'name' }}" class="detail-img">
+        {% else %}
+        <div class="detail-img" style="display:flex;align-items:center;justify-content:center;font-size:6rem;">🪑</div>
+        {% endif %}
+    </div>
+    <div class="reveal">
+        <div class="detail-breadcrumb">
+            <a href="{% url 'home' %}">{% t 'nav.home' %}</a> /
+            <a href="{% url 'products' %}">{% t 'nav.products' %}</a> /
+            <a href="{% url 'products' %}?category={{ product.category.slug }}">{{ product.category|tfield:'name' }}</a> /
+            <span>{{ product|tfield:'name' }}</span>
+        </div>
+        <div class="detail-cat">{{ product.category.icon }} {{ product.category|tfield:'name' }}</div>
+        <h1 class="detail-name">{{ product|tfield:'name' }}</h1>
+        <div class="detail-price">{{ product.get_price_display }}</div>
+        {% if product|tfield:'description' %}
+        <p class="detail-desc">{{ product|tfield:'description' }}</p>
+        {% endif %}
+        <div class="detail-specs">
+            <div class="detail-spec"><span class="detail-spec-key">{% t 'common.material' %}</span><span class="detail-spec-val">{{ product.get_material_display }}</span></div>
+            {% if product|tfield:'color' %}
+            <div class="detail-spec"><span class="detail-spec-key">{% t 'common.color' %}</span><span class="detail-spec-val">{{ product|tfield:'color' }}</span></div>
+            {% endif %}
+            <div class="detail-spec"><span class="detail-spec-key">{% t 'common.category' %}</span><span class="detail-spec-val">{{ product.category|tfield:'name' }}</span></div>
+            <div class="detail-spec"><span class="detail-spec-key">{% t 'common.warranty' %}</span><span class="detail-spec-val">{% t 'common.warranty_val' %}</span></div>
+            <div class="detail-spec"><span class="detail-spec-key">{% t 'common.delivery' %}</span><span class="detail-spec-val">{% t 'common.delivery_val' %}</span></div>
+        </div>
+        <div class="detail-actions">
+            <a href="{{ settings.telegram }}" target="_blank" class="btn btn-primary">{% t 'common.order_tg_full' %}</a>
+            <a href="https://wa.me/{{ settings.whatsapp|slice:'1:' }}" target="_blank" class="btn btn-outline">{% t 'common.whatsapp' %}</a>
+        </div>
+        <div class="order-form">
+            <h3>{% t 'detail.order_title' %}</h3>
+            <form method="POST" action="{% url 'order_product' product.pk %}">
+                {% csrf_token %}
+                <div class="form-group"><label>{% t 'common.your_name' %}</label><input type="text" name="name" placeholder="{% t 'detail.placeholder' %}" required></div>
+                <div class="form-group"><label>{% t 'common.your_phone' %}</label><input type="tel" name="phone" placeholder="{% t 'detail.placeholder_phone' %}" required></div>
+                <div class="form-group"><label>{% t 'common.extra_msg' %}</label><textarea name="message" placeholder="{% t 'detail.placeholder_msg' %}"></textarea></div>
+                <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">{% t 'common.submit_order' %}</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% if related %}
+<section class="related-section">
+    <div class="section-head reveal">
+        <div class="section-label">{% t 'detail.related.label' %}</div>
+        <h2 class="section-title">{% t 'detail.related.title' %}</h2>
+    </div>
+    <div class="products-grid">
+        {% for item in related %}
+        <div class="product-card reveal">
+            <div class="product-card-img-wrap">
+                {% if item.image %}<img src="{{ item.image.url }}" alt="{{ item|tfield:'name' }}" class="product-card-img" loading="lazy">{% endif %}
+            </div>
+            <div class="product-card-body">
+                <div class="product-card-name">{{ item|tfield:'name' }}</div>
+                <div class="product-card-price">{{ item.get_price_display }}</div>
+                <a href="{% url 'product_detail' item.pk %}" class="btn btn-primary btn-sm">{% t 'common.details' %}</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kirish — Jadid Mebel Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0f0f0d;
+            padding: 2rem;
+        }
+        .login-box {
+            width: 100%;
+            max-width: 400px;
+            background: #1a1a18;
+            border: 1px solid rgba(200,169,110,0.25);
+            border-radius: 8px;
+            padding: 2.5rem;
+        }
+        .login-brand { text-align: center; margin-bottom: 2rem; }
+        .login-brand h1 { color: #f5f0e8; font-size: 1.5rem; font-weight: 600; }
+        .login-brand h1 em { color: #c8a96e; font-style: normal; }
+        .login-brand p { color: #9a9a96; font-size: 0.8rem; margin-top: 0.5rem; }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: #9a9a96; margin-bottom: 0.4rem; }
+        .form-group input {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            background: #0f0f0d;
+            border: 1px solid rgba(200,169,110,0.2);
+            border-radius: 4px;
+            color: #f5f0e8;
+            font-size: 0.95rem;
+        }
+        .form-group input:focus { outline: none; border-color: #c8a96e; }
+        .btn {
+            width: 100%;
+            padding: 0.9rem;
+            background: #c8a96e;
+            color: #0f0f0d;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .btn:hover { filter: brightness(1.08); }
+        .msg { padding: 0.75rem; border-radius: 4px; font-size: 0.85rem; margin-bottom: 1rem; background: rgba(244,67,54,0.15); color: #e57373; border-left: 3px solid #e57373; }
+        .back { display: block; text-align: center; margin-top: 1.5rem; color: #9a9a96; font-size: 0.8rem; text-decoration: none; }
+        .back:hover { color: #c8a96e; }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <div class="login-brand">
+            <h1>Jadid <em>Mebel</em></h1>
+            <p>Admin panelga kirish</p>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+            <div class="msg">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" action="{% url 'dashboard_login' %}">
+            {% csrf_token %}
+            {% if request.GET.next %}<input type="hidden" name="next" value="{{ request.GET.next }}">{% endif %}
+            <div class="form-group">
+                <label>Login</label>
+                <input type="text" name="username" required autocomplete="username" value="{{ request.POST.username|default:'' }}">
+            </div>
+            <div class="form-group">
+                <label>Parol</label>
+                <input type="password" name="password" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn">Kirish</button>
+        </form>
+        <p style="margin-top:1.25rem;font-size:0.75rem;color:#6b6b68;text-align:center;line-height:1.6;">
+            Birinchi marta? Terminalda:<br>
+            <code style="color:#c8a96e;">python manage.py setup_admin</code>
+        </p>
+        <a href="{% url 'home' %}" class="back">← Saytga qaytish</a>
+    </div>
+</body>
+</html>

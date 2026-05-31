@@ -1,0 +1,262 @@
+{% extends 'main/base.html' %}
+{% load jm_i18n %}
+{% block title %}{% t 'contact.title' %}{% endblock %}
+
+{% block extra_head %}
+<style>
+.contact-hero {
+    background: var(--charcoal);
+    padding: 5rem 5% 4rem;
+    text-align: center;
+}
+.contact-hero-label { color: var(--gold); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1rem; }
+.contact-hero h1 { font-family: var(--font-display); font-size: clamp(2.2rem, 4vw, 3.5rem); font-weight: 300; color: var(--cream); }
+
+.contact-section {
+    padding: 6rem 5%;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 5rem;
+}
+
+/* Info */
+.contact-info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--border);
+}
+.contact-info-item:last-child { border: none; margin-bottom: 0; }
+.contact-icon {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+.contact-info-label { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.4rem; }
+.contact-info-val {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 500;
+    color: var(--charcoal);
+    text-decoration: none;
+    transition: color var(--transition);
+    display: block;
+}
+.contact-info-val:hover { color: var(--gold); }
+.contact-info-sub { font-size: 0.8rem; color: var(--gray); margin-top: 0.3rem; }
+
+/* Form */
+.contact-form-wrap {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 3rem;
+}
+.contact-form-wrap h2 {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 300;
+    margin-bottom: 0.5rem;
+    color: var(--charcoal);
+}
+.contact-form-wrap p { color: var(--gray); font-size: 0.875rem; margin-bottom: 2.5rem; }
+
+.form-group { margin-bottom: 1.25rem; }
+.form-group label {
+    display: block;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+.form-group input, .form-group textarea, .form-group select {
+    width: 100%;
+    padding: 0.9rem 1.1rem;
+    border: 1.5px solid var(--light-gray);
+    border-radius: 2px;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--charcoal);
+    background: #fff;
+    transition: border-color var(--transition), box-shadow var(--transition);
+    outline: none;
+}
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(200,169,110,0.12);
+}
+.form-group textarea { resize: vertical; min-height: 120px; }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+.contact-socials {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+.social-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.85rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all var(--transition);
+}
+.social-tg { background: #e8f4fb; color: #0088cc; }
+.social-tg:hover { background: #0088cc; color: #fff; }
+.social-wa { background: #e8f7ed; color: #25D366; }
+.social-wa:hover { background: #25D366; color: #fff; }
+
+.map-section { padding: 0 5% 6rem; }
+.map-wrap {
+    border-radius: 4px;
+    overflow: hidden;
+    height: 400px;
+    background: var(--light-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+}
+.map-wrap iframe { width: 100%; height: 100%; border: none; display: block; }
+.map-placeholder { text-align: center; color: var(--gray); }
+.map-placeholder-icon { font-size: 3rem; margin-bottom: 1rem; }
+
+@media (max-width: 768px) {
+    .contact-section { grid-template-columns: 1fr; gap: 3rem; }
+    .form-row { grid-template-columns: 1fr; }
+    .contact-form-wrap { padding: 2rem; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="contact-hero">
+    <div class="contact-hero-label">{% t 'contact.hero.label' %}</div>
+    <h1>{% t 'nav.contact' %} <em style="color:var(--gold);font-style:italic;">{% t 'contact.hero.title' %}</em></h1>
+</section>
+
+<section class="contact-section">
+    <!-- Info -->
+    <div class="reveal">
+        <div class="section-label" style="margin-bottom:2rem;">{% t 'contact.info' %}</div>
+
+        <div class="contact-info-item">
+            <div class="contact-icon">📞</div>
+            <div>
+                <div class="contact-info-label">{% t 'common.phone' %}</div>
+                <a href="tel:{{ settings.phone }}" class="contact-info-val">{{ settings.phone }}</a>
+                <div class="contact-info-sub">{% t 'contact.hours' %}</div>
+            </div>
+        </div>
+
+        <div class="contact-info-item">
+            <div class="contact-icon">✈️</div>
+            <div>
+                <div class="contact-info-label">Telegram</div>
+                <a href="{{ settings.telegram }}" target="_blank" class="contact-info-val">{% t 'contact.tg_write' %}</a>
+                <div class="contact-info-sub">{% t 'contact.tg_fast' %}</div>
+            </div>
+        </div>
+
+        <div class="contact-info-item">
+            <div class="contact-icon">📱</div>
+            <div>
+                <div class="contact-info-label">WhatsApp</div>
+                <a href="https://wa.me/{{ settings.whatsapp|slice:'1:' }}" target="_blank" class="contact-info-val">WhatsApp</a>
+                <div class="contact-info-sub">{{ settings.whatsapp }}</div>
+            </div>
+        </div>
+
+        <div class="contact-info-item">
+            <div class="contact-icon">📍</div>
+            <div>
+                <div class="contact-info-label">Manzil</div>
+                <span class="contact-info-val" style="cursor:default;">{{ settings|tfield:'address' }}</span>
+                <div class="contact-info-sub">{% t 'contact.country' %}</div>
+            </div>
+        </div>
+
+        {% if settings.instagram %}
+        <div class="contact-info-item">
+            <div class="contact-icon">📸</div>
+            <div>
+                <div class="contact-info-label">Instagram</div>
+                <a href="{{ settings.instagram }}" target="_blank" class="contact-info-val">Instagram</a>
+                <div class="contact-info-sub">So'nggi ishlarimizni ko'ring</div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="contact-socials">
+            <a href="{{ settings.telegram }}" target="_blank" class="social-btn social-tg">
+                ✈️ Telegram
+            </a>
+            <a href="https://wa.me/{{ settings.whatsapp|slice:'1:' }}" target="_blank" class="social-btn social-wa">
+                📱 WhatsApp
+            </a>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="contact-form-wrap reveal">
+        <h2>{% t 'contact.form.title' %}</h2>
+        <p>{% t 'contact.form.desc' %}</p>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Ismingiz *</label>
+                    <input type="text" name="name" placeholder="Jasur Karimov" required>
+                </div>
+                <div class="form-group">
+                    <label>Telefon *</label>
+                    <input type="tel" name="phone" placeholder="+998 90 123 45 67" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Xabar</label>
+                <textarea name="message" placeholder="Qanday mebel kerak? O'lcham, rang, material..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:1rem;">{% t 'common.send' %}</button>
+        </form>
+    </div>
+</section>
+
+<!-- MAP -->
+<div class="map-section">
+    <div class="section-head reveal">
+        <div class="section-label">{% t 'contact.map.label' %}</div>
+        <h2 class="section-title">{% t 'contact.map.title' %}</h2>
+    </div>
+    <div class="map-wrap reveal">
+        {% if settings.map_embed %}
+            {{ settings.map_embed|safe }}
+        {% else %}
+        <div class="map-placeholder">
+            <div class="map-placeholder-icon">📍</div>
+            <p>{{ settings|tfield:'address' }}</p>
+            <br>
+            <a href="https://maps.google.com/?q={{ settings|tfield:'address'|urlencode }}" target="_blank" class="btn btn-primary btn-sm">{% t 'contact.map.open' %}</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

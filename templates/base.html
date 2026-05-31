@@ -1,0 +1,594 @@
+{% load jm_i18n %}
+<!DOCTYPE html>
+<html lang="{{ current_language|default:'uz' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% t 'meta.default_title' %}{% endblock %}</title>
+    <meta name="description" content="{% block meta_desc %}{% t 'meta.default_desc' %}{% endblock %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --cream: #F5F0E8;
+            --warm-white: #FDFAF5;
+            --charcoal: #1A1A18;
+            --dark: #0F0F0D;
+            --gold: #C8A96E;
+            --gold-light: #E8C98A;
+            --wood: #8B6347;
+            --wood-light: #B08060;
+            --gray: #6B6B68;
+            --light-gray: #E8E4DC;
+            --border: rgba(200,169,110,0.25);
+            --shadow: 0 4px 30px rgba(15,15,13,0.12);
+            --shadow-lg: 0 20px 60px rgba(15,15,13,0.18);
+            --font-display: 'Cormorant Garamond', serif;
+            --font-body: 'DM Sans', sans-serif;
+            --nav-h: 80px;
+            --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--warm-white);
+            color: var(--charcoal);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ─── NAVBAR ─── */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: var(--nav-h);
+            background: rgba(253,250,245,0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            padding: 0 5%;
+            transition: box-shadow var(--transition);
+        }
+        .navbar.scrolled { box-shadow: var(--shadow); }
+
+        .nav-brand {
+            font-family: var(--font-display);
+            font-size: 1.7rem;
+            font-weight: 600;
+            color: var(--charcoal);
+            text-decoration: none;
+            letter-spacing: 0.01em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .nav-brand span {
+            color: var(--gold);
+            font-style: italic;
+        }
+        .nav-logo-mark {
+            width: 36px; height: 36px;
+            background: var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            margin-left: auto;
+            list-style: none;
+        }
+        .nav-links a {
+            font-family: var(--font-body);
+            font-size: 0.875rem;
+            font-weight: 400;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--gray);
+            text-decoration: none;
+            transition: color var(--transition);
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 0; right: 0;
+            height: 1px;
+            background: var(--gold);
+            transform: scaleX(0);
+            transition: transform var(--transition);
+            transform-origin: left;
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--charcoal); }
+        .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); }
+
+        .nav-cta {
+            margin-left: 2rem;
+            background: var(--charcoal);
+            color: var(--cream) !important;
+            padding: 0.6rem 1.4rem;
+            border-radius: 2px;
+            font-size: 0.8rem !important;
+            letter-spacing: 0.12em !important;
+            transition: background var(--transition), color var(--transition) !important;
+        }
+        .nav-cta:hover { background: var(--gold) !important; color: var(--charcoal) !important; }
+        .nav-cta::after { display: none !important; }
+
+        .lang-switch {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-left: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .lang-switch a {
+            padding: 0.35rem 0.55rem;
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-decoration: none;
+            color: var(--gray);
+            transition: all var(--transition);
+        }
+        .lang-switch a:hover { color: var(--charcoal); background: rgba(200,169,110,0.08); }
+        .lang-switch a.active { background: var(--gold); color: var(--charcoal); }
+
+        .nav-hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            margin-left: auto;
+            padding: 8px;
+            background: none;
+            border: none;
+        }
+        .nav-hamburger span {
+            display: block;
+            width: 24px; height: 2px;
+            background: var(--charcoal);
+            transition: all var(--transition);
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: var(--nav-h); left: 0; right: 0; bottom: 0;
+            background: var(--warm-white);
+            z-index: 999;
+            padding: 3rem 5%;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        .mobile-menu.open { display: flex; }
+        .mobile-menu a {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 400;
+            color: var(--charcoal);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1.5rem;
+            transition: color var(--transition);
+        }
+        .mobile-menu a:hover { color: var(--gold); }
+
+        /* ─── MAIN CONTENT ─── */
+        main { padding-top: var(--nav-h); min-height: calc(100vh - 300px); }
+
+        /* ─── MESSAGES ─── */
+        .messages-wrapper {
+            position: fixed;
+            top: calc(var(--nav-h) + 1rem);
+            right: 1.5rem;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            max-width: 360px;
+        }
+        .message {
+            padding: 1rem 1.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            animation: slideIn 0.4s ease;
+            cursor: pointer;
+        }
+        .message.success { background: #1A2F1A; color: #8FCC8F; border-left: 3px solid #4CAF50; }
+        .message.error   { background: #2F1A1A; color: #CC8F8F; border-left: 3px solid #F44336; }
+        @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: none; opacity: 1; } }
+
+        /* ─── SECTIONS ─── */
+        .section { padding: 6rem 5%; }
+        .section-sm { padding: 4rem 5%; }
+        .section-dark { background: var(--charcoal); color: var(--cream); }
+        .section-cream { background: var(--cream); }
+
+        .section-head {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        .section-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold);
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+        }
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-weight: 300;
+            line-height: 1.2;
+            color: var(--charcoal);
+        }
+        .section-dark .section-title { color: var(--cream); }
+
+        /* ─── BUTTONS ─── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.85rem 2rem;
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition);
+            border-radius: 2px;
+        }
+        .btn-primary {
+            background: var(--charcoal);
+            color: var(--cream);
+        }
+        .btn-primary:hover { background: var(--gold); color: var(--charcoal); }
+        .btn-outline {
+            background: transparent;
+            color: var(--charcoal);
+            border: 1.5px solid var(--charcoal);
+        }
+        .btn-outline:hover { background: var(--charcoal); color: var(--cream); }
+        .btn-gold {
+            background: var(--gold);
+            color: var(--charcoal);
+        }
+        .btn-gold:hover { background: var(--charcoal); color: var(--cream); }
+        .btn-sm { padding: 0.6rem 1.3rem; font-size: 0.75rem; }
+
+        /* ─── PRODUCT CARD ─── */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        .product-card {
+            background: #fff;
+            border: 1px solid var(--light-gray);
+            border-radius: 4px;
+            overflow: hidden;
+            transition: transform var(--transition), box-shadow var(--transition);
+            cursor: pointer;
+        }
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+        }
+        .product-card-img {
+            width: 100%;
+            aspect-ratio: 4/3;
+            object-fit: cover;
+            display: block;
+            background: var(--light-gray);
+            transition: transform 0.5s ease;
+        }
+        .product-card:hover .product-card-img { transform: scale(1.04); }
+        .product-card-img-wrap { overflow: hidden; position: relative; }
+        .product-badge {
+            position: absolute;
+            top: 1rem; left: 1rem;
+            background: var(--gold);
+            color: var(--charcoal);
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 0.25rem 0.6rem;
+            border-radius: 2px;
+        }
+
+        .product-card-body { padding: 1.5rem; }
+        .product-card-cat {
+            font-size: 0.68rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+        .product-card-name {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--charcoal);
+            margin-bottom: 0.4rem;
+        }
+        .product-card-meta {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+        .product-card-price {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--wood);
+            margin-bottom: 1rem;
+        }
+        .product-card-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+        /* ─── FLOAT BUTTONS ─── */
+        .float-btns {
+            position: fixed;
+            bottom: 2rem;
+            right: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            z-index: 500;
+        }
+        .float-btn {
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 1.4rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+        .float-btn:hover { transform: scale(1.1); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+        .float-btn-tg { background: #0088cc; }
+        .float-btn-wa { background: #25D366; }
+
+        /* ─── FOOTER ─── */
+        footer {
+            background: var(--dark);
+            color: rgba(245,240,232,0.7);
+            padding: 4rem 5% 2rem;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        .footer-brand {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            color: var(--cream);
+            margin-bottom: 1rem;
+        }
+        .footer-brand em { color: var(--gold); }
+        .footer-desc { font-size: 0.875rem; line-height: 1.7; }
+        .footer-title {
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 1.25rem;
+        }
+        .footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+        .footer-links a {
+            color: rgba(245,240,232,0.65);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color var(--transition);
+        }
+        .footer-links a:hover { color: var(--gold); }
+        .footer-bottom {
+            border-top: 1px solid rgba(200,169,110,0.15);
+            padding-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 900px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .nav-links { display: none; }
+            .nav-hamburger { display: flex; }
+        }
+        @media (max-width: 600px) {
+            .section { padding: 4rem 4%; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+    <a href="{% url 'home' %}" class="nav-brand">
+        <div class="nav-logo-mark">🪑</div>
+        Jadid <span>Mebel</span>
+    </a>
+
+    <ul class="nav-links">
+        <li><a href="{% url 'home' %}" class="{% if page == 'home' %}active{% endif %}">{% t 'nav.home' %}</a></li>
+        <li><a href="{% url 'products' %}" class="{% if page == 'products' %}active{% endif %}">{% t 'nav.products' %}</a></li>
+        <li><a href="{% url 'portfolio' %}" class="{% if page == 'portfolio' %}active{% endif %}">{% t 'nav.portfolio' %}</a></li>
+        <li><a href="{% url 'about' %}" class="{% if page == 'about' %}active{% endif %}">{% t 'nav.about' %}</a></li>
+        <li><a href="{% url 'custom_order' %}" class="{% if page == 'custom' %}active{% endif %}">{% t 'nav.custom' %}</a></li>
+        <li><a href="{% url 'contact' %}" class="{% if page == 'contact' %}active{% endif %}">{% t 'nav.contact' %}</a></li>
+        <li class="lang-switch">
+            {% for lang in language_choices %}
+            <a href="{{ lang.url }}" class="{% if lang.active %}active{% endif %}" title="{{ lang.label }}">{{ lang.code|upper }}</a>
+            {% endfor %}
+        </li>
+        <li><a href="{% url 'contact' %}" class="nav-cta">{% t 'nav.order' %}</a></li>
+    </ul>
+
+    <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+    </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+    <div class="lang-switch" style="margin-bottom:1rem;width:fit-content;">
+        {% for lang in language_choices %}
+        <a href="{{ lang.url }}" class="{% if lang.active %}active{% endif %}">{{ lang.code|upper }}</a>
+        {% endfor %}
+    </div>
+    <a href="{% url 'home' %}" onclick="closeMobile()">{% t 'nav.home' %}</a>
+    <a href="{% url 'products' %}" onclick="closeMobile()">{% t 'nav.products' %}</a>
+    <a href="{% url 'portfolio' %}" onclick="closeMobile()">{% t 'nav.portfolio' %}</a>
+    <a href="{% url 'about' %}" onclick="closeMobile()">{% t 'nav.about' %}</a>
+    <a href="{% url 'custom_order' %}" onclick="closeMobile()">{% t 'nav.custom' %}</a>
+    <a href="{% url 'contact' %}" onclick="closeMobile()">{% t 'nav.contact' %}</a>
+    <a href="{% url 'contact' %}" onclick="closeMobile()" style="color:var(--gold);">{% t 'nav.order' %}</a>
+</div>
+
+<!-- MESSAGES -->
+{% if messages %}
+<div class="messages-wrapper" id="messagesWrapper">
+    {% for message in messages %}
+    <div class="message {{ message.tags }}" onclick="this.remove()">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- MAIN -->
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<!-- FLOAT BUTTONS -->
+<div class="float-btns">
+    <a href="{{ settings.telegram }}" target="_blank" class="float-btn float-btn-tg" title="Telegram">✈️</a>
+    <a href="https://wa.me/{{ settings.whatsapp|slice:'1:' }}" target="_blank" class="float-btn float-btn-wa" title="WhatsApp">📱</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-grid">
+        <div>
+            <div class="footer-brand">Jadid <em>Mebel</em></div>
+            <p class="footer-desc">{{ settings|tfield:'about_text'|truncatechars:150 }}</p>
+        </div>
+        <div>
+            <div class="footer-title">{% t 'footer.pages' %}</div>
+            <ul class="footer-links">
+                <li><a href="{% url 'home' %}">{% t 'nav.home' %}</a></li>
+                <li><a href="{% url 'products' %}">{% t 'nav.products' %}</a></li>
+                <li><a href="{% url 'portfolio' %}">{% t 'nav.portfolio' %}</a></li>
+                <li><a href="{% url 'about' %}">{% t 'nav.about' %}</a></li>
+                <li><a href="{% url 'contact' %}">{% t 'nav.contact' %}</a></li>
+            </ul>
+        </div>
+        <div>
+            <div class="footer-title">{% t 'footer.categories' %}</div>
+            <ul class="footer-links">
+                <li><a href="{% url 'products' %}?category=stol">Stol</a></li>
+                <li><a href="{% url 'products' %}?category=stul">Stul</a></li>
+                <li><a href="{% url 'products' %}?category=komplekt">Komplekt</a></li>
+                <li><a href="{% url 'products' %}?category=ofis">Ofis meblari</a></li>
+            </ul>
+        </div>
+        <div>
+            <div class="footer-title">{% t 'footer.contact' %}</div>
+            <ul class="footer-links">
+                <li><a href="tel:{{ settings.phone }}">📞 {{ settings.phone }}</a></li>
+                <li><a href="{{ settings.telegram }}" target="_blank">{% t 'common.telegram' %}</a></li>
+                <li><a href="https://wa.me/{{ settings.whatsapp|slice:'1:' }}" target="_blank">{% t 'common.whatsapp' %}</a></li>
+                <li><a href="#">📍 {{ settings|tfield:'address' }}</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <span>© 2026 Jadid Mebel. {% t 'footer.rights' %}</span>
+        <a href="{% url 'dashboard_home' %}" style="color:rgba(200,169,110,0.5); font-size:0.75rem; text-decoration:none;">{% t 'footer.admin' %}</a>
+    </div>
+</footer>
+
+<script>
+    // Navbar scroll effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // Mobile menu
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    let menuOpen = false;
+
+    hamburger.addEventListener('click', () => {
+        menuOpen = !menuOpen;
+        mobileMenu.classList.toggle('open', menuOpen);
+        document.body.style.overflow = menuOpen ? 'hidden' : '';
+    });
+
+    function closeMobile() {
+        menuOpen = false;
+        mobileMenu.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    // Auto-dismiss messages
+    setTimeout(() => {
+        const wrapper = document.getElementById('messagesWrapper');
+        if (wrapper) wrapper.style.transition = 'opacity 0.5s'; wrapper && (wrapper.style.opacity = '0');
+        setTimeout(() => wrapper && wrapper.remove(), 600);
+    }, 5000);
+
+    // Scroll reveal animation
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(el => {
+            if (el.isIntersecting) {
+                el.target.style.opacity = '1';
+                el.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+        observer.observe(el);
+    });
+</script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

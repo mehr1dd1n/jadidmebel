@@ -1,0 +1,198 @@
+{% extends 'main/base.html' %}
+{% load jm_i18n %}
+{% block title %}{% t 'portfolio.title' %}{% endblock %}
+
+{% block extra_head %}
+<style>
+.page-hero {
+    background: var(--charcoal);
+    padding: 5rem 5% 4rem;
+    text-align: center;
+}
+.page-hero-label { color: var(--gold); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1rem; }
+.page-hero h1 { font-family: var(--font-display); font-size: clamp(2.2rem, 4vw, 3.5rem); font-weight: 300; color: var(--cream); }
+
+.portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5px;
+    background: var(--border);
+}
+.portfolio-item {
+    position: relative;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    cursor: pointer;
+    background: var(--charcoal);
+}
+.portfolio-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease, filter 0.4s ease;
+}
+.portfolio-item:hover .portfolio-img {
+    transform: scale(1.08);
+    filter: brightness(0.7);
+}
+.portfolio-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(15,15,13,0.85) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity var(--transition);
+    display: flex;
+    align-items: flex-end;
+    padding: 2rem;
+}
+.portfolio-item:hover .portfolio-overlay { opacity: 1; }
+.portfolio-title {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--cream);
+    margin-bottom: 0.4rem;
+}
+.portfolio-desc { font-size: 0.8rem; color: rgba(245,240,232,0.7); }
+.portfolio-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    background: linear-gradient(135deg, var(--cream), var(--light-gray));
+    color: var(--wood);
+}
+
+.empty-portfolio {
+    text-align: center;
+    padding: 8rem 2rem;
+    background: var(--cream);
+}
+
+/* Before/After modal */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15,15,13,0.9);
+    z-index: 5000;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+    background: var(--charcoal);
+    border-radius: 4px;
+    max-width: 800px;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+.modal-close {
+    position: absolute;
+    top: 1rem; right: 1rem;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: #fff;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.1rem;
+    z-index: 10;
+    display: flex; align-items: center; justify-content: center;
+}
+.modal-img { width: 100%; display: block; max-height: 60vh; object-fit: cover; }
+.modal-body { padding: 2rem; }
+.modal-title { font-family: var(--font-display); font-size: 1.6rem; color: var(--cream); margin-bottom: 0.5rem; }
+.modal-desc { color: rgba(245,240,232,0.65); font-size: 0.9rem; line-height: 1.7; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+    <div class="page-hero-label">{% t 'portfolio.hero.label' %}</div>
+    <h1>Portfolio — <em style="color:var(--gold);font-style:italic;">{% t 'portfolio.hero.title' %}</em></h1>
+</section>
+
+{% if works %}
+<div class="portfolio-grid">
+    {% for work in works %}
+    <div class="portfolio-item reveal"
+         data-title="{{ work|tfield:'title'|escape }}"
+         data-desc="{{ work|tfield:'description'|escape }}"
+         data-img="{% if work.image %}{{ work.image.url }}{% endif %}"
+         onclick="openModal(this.dataset.title, this.dataset.desc, this.dataset.img)">
+        {% if work.image %}
+        <img src="{{ work.image.url }}" alt="{{ work|tfield:'title' }}" class="portfolio-img" loading="lazy">
+        {% else %}
+        <div class="portfolio-placeholder">🪑</div>
+        {% endif %}
+        <div class="portfolio-overlay">
+            <div>
+                <div class="portfolio-title">{{ work|tfield:'title' }}</div>
+                {% if work|tfield:'description' %}
+                <div class="portfolio-desc">{{ work|tfield:'description'|truncatechars:60 }}</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-portfolio">
+    <div style="font-size:4rem;margin-bottom:1.5rem;opacity:0.4;">🖼️</div>
+    <h3 style="font-family:var(--font-display);font-size:1.8rem;font-weight:300;color:var(--gray);margin-bottom:1rem;">{% t 'portfolio.empty' %}</h3>
+    <p style="color:var(--gray);">Tez orada real ishlarimiz qo'shiladi!</p>
+</div>
+{% endif %}
+
+<!-- CTA after portfolio -->
+<section class="section section-cream" style="text-align:center;">
+    <div class="reveal">
+        <div class="section-label">{% t 'portfolio.cta.label' %}</div>
+        <h2 class="section-title" style="margin-bottom:1.5rem;">{% t 'portfolio.cta.title' %}</h2>
+        <p style="color:var(--gray);margin-bottom:2.5rem;max-width:400px;margin-left:auto;margin-right:auto;">{% t 'portfolio.cta.desc' %}</p>
+        <a href="{% url 'contact' %}" class="btn btn-primary">{% t 'nav.order' %}</a>
+    </div>
+</section>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="portfolioModal" onclick="if(event.target===this)closeModal()">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <img src="" alt="" class="modal-img" id="modalImg" style="display:none;">
+        <div class="modal-body">
+            <div class="modal-title" id="modalTitle"></div>
+            <div class="modal-desc" id="modalDesc"></div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function openModal(title, desc, imgSrc) {
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalDesc').textContent = desc;
+    const img = document.getElementById('modalImg');
+    if (imgSrc) {
+        img.src = imgSrc;
+        img.style.display = 'block';
+    } else {
+        img.style.display = 'none';
+    }
+    document.getElementById('portfolioModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+    document.getElementById('portfolioModal').classList.remove('open');
+    document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
+</script>
+{% endblock %}
