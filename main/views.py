@@ -1,13 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
-from django.utils import translation
 from .models import Product, Category, Portfolio, Review, Order, SiteSettings
-from .translations import translate
-
-
-def _msg(key):
-    lang = (translation.get_language() or 'uz')[:2]
-    return translate(key, lang)
 
 
 def get_site_settings():
@@ -85,26 +78,6 @@ def about(request):
     })
 
 
-def custom_order(request):
-    settings_obj = get_site_settings()
-
-    if request.method == 'POST':
-        name = request.POST.get('name', '').strip()
-        phone = request.POST.get('phone', '').strip()
-        message_text = request.POST.get('message', '').strip()
-
-        if name and phone:
-            Order.objects.create(name=name, phone=phone, message=message_text)
-            messages.success(request, _msg('msg.order_ok'))
-            return redirect('custom_order')
-        messages.error(request, _msg('msg.form_error'))
-
-    return render(request, 'custom_order.html', {
-        'settings': settings_obj,
-        'page': 'custom',
-    })
-
-
 def contact(request):
     settings_obj = get_site_settings()
 
@@ -115,10 +88,10 @@ def contact(request):
 
         if name and phone:
             Order.objects.create(name=name, phone=phone, message=message_text)
-            messages.success(request, _msg('msg.order_ok'))
+            messages.success(request, "✅ Buyurtmangiz qabul qilindi! Tez orada siz bilan bog'lanamiz.")
             return redirect('contact')
         else:
-            messages.error(request, _msg('msg.form_error'))
+            messages.error(request, "❌ Ism va telefon raqamni to'ldiring.")
 
     return render(request, 'contact.html', {
         'settings': settings_obj,
@@ -128,6 +101,7 @@ def contact(request):
 
 def order_product(request, pk):
     product = get_object_or_404(Product, pk=pk, is_active=True)
+    settings_obj = get_site_settings()
 
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
@@ -136,8 +110,12 @@ def order_product(request, pk):
 
         if name and phone:
             Order.objects.create(product=product, name=name, phone=phone, message=message_text)
-            messages.success(request, _msg('msg.order_ok'))
-            return redirect('product_detail', pk=pk)
-        messages.error(request, _msg('msg.form_error'))
+            messages.success(request, "✅ Buyurtmangiz qabul qilindi! Tez orada siz bilan bog'lanamiz.")
+            return redirect('products')
+        else:
+            messages.error(request, "❌ Ma'lumotlarni to'ldiring.")
 
-    return redirect('product_detail', pk=pk)
+    return render(request, 'order_modal.html', {
+        'product': product,
+        'settings': settings_obj,
+    })

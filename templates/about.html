@@ -1,6 +1,5 @@
 {% extends 'main/base.html' %}
-{% load jm_i18n %}
-{% block title %}{% t 'about.title' %}{% endblock %}
+{% block title %}Biz haqimizda — Jadid Mebel{% endblock %}
 
 {% block extra_head %}
 <style>
@@ -137,9 +136,9 @@
 
 <section class="about-hero">
     <div class="reveal">
-        <div class="about-hero-badge">🏆 {% t 'about.badge' %}</div>
-        <h1>Jadid <em>Mebel</em> {% t 'about.heading' %}</h1>
-        <p>{{ settings|tfield:'about_text' }}</p>
+        <div class="about-hero-badge">🏆 Toshkentda ishonchli mebel brendi</div>
+        <h1>Jadid <em>Mebel</em> haqida</h1>
+        <p>{{ settings.about_text }}</p>
         <br>
         <p style="color:rgba(245,240,232,0.7);line-height:1.8;font-size:0.95rem;">
             Biz har bir mebelni sanʼat asari sifatida ko'ramiz. Mijozimizning orzusi va tasavvuridagi

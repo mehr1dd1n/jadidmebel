@@ -9,5 +9,4 @@ urlpatterns = [
     path('portfolio/', views.portfolio, name='portfolio'),
     path('biz-haqimizda/', views.about, name='about'),
     path('aloqa/', views.contact, name='contact'),
-    path('maxsus-buyurtma/', views.custom_order, name='custom_order'),
 ]

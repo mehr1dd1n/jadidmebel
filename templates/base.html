@@ -1,11 +1,10 @@
-{% load jm_i18n %}
 <!DOCTYPE html>
-<html lang="{{ current_language|default:'uz' }}">
+<html lang="uz">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% t 'meta.default_title' %}{% endblock %}</title>
-    <meta name="description" content="{% block meta_desc %}{% t 'meta.default_desc' %}{% endblock %}">
+    <title>{% block title %}Jadid Mebel — Zamonaviy va Sifatli Mebel{% endblock %}</title>
+    <meta name="description" content="{% block meta_desc %}Jadid Mebel — Toshkentda sifatli, zamonaviy va arzon mebel. Stol, stul, ofis meblari va boshqalar.{% endblock %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -128,27 +127,6 @@
         }
         .nav-cta:hover { background: var(--gold) !important; color: var(--charcoal) !important; }
         .nav-cta::after { display: none !important; }
-
-        .lang-switch {
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-            margin-left: 1rem;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .lang-switch a {
-            padding: 0.35rem 0.55rem;
-            font-size: 0.68rem;
-            font-weight: 600;
-            letter-spacing: 0.05em;
-            text-decoration: none;
-            color: var(--gray);
-            transition: all var(--transition);
-        }
-        .lang-switch a:hover { color: var(--charcoal); background: rgba(200,169,110,0.08); }
-        .lang-switch a.active { background: var(--gold); color: var(--charcoal); }
 
         .nav-hamburger {
             display: none;
@@ -441,18 +419,12 @@
     </a>
 
     <ul class="nav-links">
-        <li><a href="{% url 'home' %}" class="{% if page == 'home' %}active{% endif %}">{% t 'nav.home' %}</a></li>
-        <li><a href="{% url 'products' %}" class="{% if page == 'products' %}active{% endif %}">{% t 'nav.products' %}</a></li>
-        <li><a href="{% url 'portfolio' %}" class="{% if page == 'portfolio' %}active{% endif %}">{% t 'nav.portfolio' %}</a></li>
-        <li><a href="{% url 'about' %}" class="{% if page == 'about' %}active{% endif %}">{% t 'nav.about' %}</a></li>
-        <li><a href="{% url 'custom_order' %}" class="{% if page == 'custom' %}active{% endif %}">{% t 'nav.custom' %}</a></li>
-        <li><a href="{% url 'contact' %}" class="{% if page == 'contact' %}active{% endif %}">{% t 'nav.contact' %}</a></li>
-        <li class="lang-switch">
-            {% for lang in language_choices %}
-            <a href="{{ lang.url }}" class="{% if lang.active %}active{% endif %}" title="{{ lang.label }}">{{ lang.code|upper }}</a>
-            {% endfor %}
-        </li>
-        <li><a href="{% url 'contact' %}" class="nav-cta">{% t 'nav.order' %}</a></li>
+        <li><a href="{% url 'home' %}" class="{% if page == 'home' %}active{% endif %}">Bosh sahifa</a></li>
+        <li><a href="{% url 'products' %}" class="{% if page == 'products' %}active{% endif %}">Mahsulotlar</a></li>
+        <li><a href="{% url 'portfolio' %}" class="{% if page == 'portfolio' %}active{% endif %}">Portfolio</a></li>
+        <li><a href="{% url 'about' %}" class="{% if page == 'about' %}active{% endif %}">Biz haqimizda</a></li>
+        <li><a href="{% url 'contact' %}" class="{% if page == 'contact' %}active{% endif %}">Aloqa</a></li>
+        <li><a href="{% url 'contact' %}" class="nav-cta">Buyurtma berish</a></li>
     </ul>
 
     <button class="nav-hamburger" id="hamburger" aria-label="Menu">
@@ -462,18 +434,12 @@
 
 <!-- MOBILE MENU -->
 <div class="mobile-menu" id="mobileMenu">
-    <div class="lang-switch" style="margin-bottom:1rem;width:fit-content;">
-        {% for lang in language_choices %}
-        <a href="{{ lang.url }}" class="{% if lang.active %}active{% endif %}">{{ lang.code|upper }}</a>
-        {% endfor %}
-    </div>
-    <a href="{% url 'home' %}" onclick="closeMobile()">{% t 'nav.home' %}</a>
-    <a href="{% url 'products' %}" onclick="closeMobile()">{% t 'nav.products' %}</a>
-    <a href="{% url 'portfolio' %}" onclick="closeMobile()">{% t 'nav.portfolio' %}</a>
-    <a href="{% url 'about' %}" onclick="closeMobile()">{% t 'nav.about' %}</a>
-    <a href="{% url 'custom_order' %}" onclick="closeMobile()">{% t 'nav.custom' %}</a>
-    <a href="{% url 'contact' %}" onclick="closeMobile()">{% t 'nav.contact' %}</a>
-    <a href="{% url 'contact' %}" onclick="closeMobile()" style="color:var(--gold);">{% t 'nav.order' %}</a>
+    <a href="{% url 'home' %}" onclick="closeMobile()">Bosh sahifa</a>
+    <a href="{% url 'products' %}" onclick="closeMobile()">Mahsulotlar</a>
+    <a href="{% url 'portfolio' %}" onclick="closeMobile()">Portfolio</a>
+    <a href="{% url 'about' %}" onclick="closeMobile()">Biz haqimizda</a>
+    <a href="{% url 'contact' %}" onclick="closeMobile()">Aloqa</a>
+    <a href="{% url 'contact' %}" onclick="closeMobile()" style="color:var(--gold);">📞 Buyurtma berish</a>
 </div>
 
 <!-- MESSAGES -->
@@ -503,20 +469,20 @@
     <div class="footer-grid">
         <div>
             <div class="footer-brand">Jadid <em>Mebel</em></div>
-            <p class="footer-desc">{{ settings|tfield:'about_text'|truncatechars:150 }}</p>
+            <p class="footer-desc">{{ settings.about_text|truncatechars:150 }}</p>
         </div>
         <div>
-            <div class="footer-title">{% t 'footer.pages' %}</div>
+            <div class="footer-title">Sahifalar</div>
             <ul class="footer-links">
-                <li><a href="{% url 'home' %}">{% t 'nav.home' %}</a></li>
-                <li><a href="{% url 'products' %}">{% t 'nav.products' %}</a></li>
-                <li><a href="{% url 'portfolio' %}">{% t 'nav.portfolio' %}</a></li>
-                <li><a href="{% url 'about' %}">{% t 'nav.about' %}</a></li>
-                <li><a href="{% url 'contact' %}">{% t 'nav.contact' %}</a></li>
+                <li><a href="{% url 'home' %}">Bosh sahifa</a></li>
+                <li><a href="{% url 'products' %}">Mahsulotlar</a></li>
+                <li><a href="{% url 'portfolio' %}">Portfolio</a></li>
+                <li><a href="{% url 'about' %}">Biz haqimizda</a></li>
+                <li><a href="{% url 'contact' %}">Aloqa</a></li>
             </ul>
         </div>
         <div>
-            <div class="footer-title">{% t 'footer.categories' %}</div>
+            <div class="footer-title">Kategoriyalar</div>
             <ul class="footer-links">
                 <li><a href="{% url 'products' %}?category=stol">Stol</a></li>
                 <li><a href="{% url 'products' %}?category=stul">Stul</a></li>
@@ -525,18 +491,18 @@
             </ul>
         </div>
         <div>
-            <div class="footer-title">{% t 'footer.contact' %}</div>
+            <div class="footer-title">Bog'lanish</div>
             <ul class="footer-links">
                 <li><a href="tel:{{ settings.phone }}">📞 {{ settings.phone }}</a></li>
-                <li><a href="{{ settings.telegram }}" target="_blank">{% t 'common.telegram' %}</a></li>
-                <li><a href="https://wa.me/{{ settings.whatsapp|slice:'1:' }}" target="_blank">{% t 'common.whatsapp' %}</a></li>
-                <li><a href="#">📍 {{ settings|tfield:'address' }}</a></li>
+                <li><a href="{{ settings.telegram }}" target="_blank">✈️ Telegram</a></li>
+                <li><a href="https://wa.me/{{ settings.whatsapp|slice:'1:' }}" target="_blank">📱 WhatsApp</a></li>
+                <li><a href="#">📍 {{ settings.address }}</a></li>
             </ul>
         </div>
     </div>
     <div class="footer-bottom">
-        <span>© 2026 Jadid Mebel. {% t 'footer.rights' %}</span>
-        <a href="{% url 'dashboard_home' %}" style="color:rgba(200,169,110,0.5); font-size:0.75rem; text-decoration:none;">{% t 'footer.admin' %}</a>
+        <span>© 2024 Jadid Mebel. Barcha huquqlar himoyalangan.</span>
+        <a href="{% url 'dashboard_home' %}" style="color:rgba(200,169,110,0.5); font-size:0.75rem; text-decoration:none;">Admin</a>
     </div>
 </footer>
 

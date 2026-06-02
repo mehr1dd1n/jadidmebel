@@ -25,7 +25,8 @@ SECRET_KEY = 'django-insecure-a12&e5rc97qr!vxue&_+4+^2#e7d&tizb2yx@0pao3$++nd)8g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['jadidmebel.onrender.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = []
+
 
 # Application definition
 
@@ -43,7 +44,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -61,12 +61,8 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
-                'django.template.context_processors.i18n',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'main.context_processors.site_settings',
-                'main.context_processors.language_switcher',
-                'dashboard.context_processors.dashboard_stats',
             ],
         },
     },
@@ -89,15 +85,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
  
 LANGUAGE_CODE = 'uz'
-LANGUAGES = [
-    ('uz', "O'zbekcha"),
-    ('ru', 'Русский'),
-    ('en', 'English'),
-]
-LOCALE_PATHS = [BASE_DIR / 'locale']
 TIME_ZONE = 'Asia/Tashkent'
 USE_I18N = True
-USE_L10N = True
 USE_TZ = True
  
 STATIC_URL = '/static/'
@@ -111,4 +100,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
  
 LOGIN_URL = '/dashboard/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
-LOGOUT_REDIRECT_URL = '/uz/'
+LOGOUT_REDIRECT_URL = '/'

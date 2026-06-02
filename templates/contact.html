@@ -1,6 +1,5 @@
 {% extends 'main/base.html' %}
-{% load jm_i18n %}
-{% block title %}{% t 'contact.title' %}{% endblock %}
+{% block title %}Aloqa — Jadid Mebel{% endblock %}
 
 {% block extra_head %}
 <style>
@@ -147,21 +146,21 @@
 {% block content %}
 
 <section class="contact-hero">
-    <div class="contact-hero-label">{% t 'contact.hero.label' %}</div>
-    <h1>{% t 'nav.contact' %} <em style="color:var(--gold);font-style:italic;">{% t 'contact.hero.title' %}</em></h1>
+    <div class="contact-hero-label">Muloqot</div>
+    <h1>Biz bilan <em style="color:var(--gold);font-style:italic;">bog'laning</em></h1>
 </section>
 
 <section class="contact-section">
     <!-- Info -->
     <div class="reveal">
-        <div class="section-label" style="margin-bottom:2rem;">{% t 'contact.info' %}</div>
+        <div class="section-label" style="margin-bottom:2rem;">Kontakt ma'lumotlar</div>
 
         <div class="contact-info-item">
             <div class="contact-icon">📞</div>
             <div>
-                <div class="contact-info-label">{% t 'common.phone' %}</div>
+                <div class="contact-info-label">Telefon</div>
                 <a href="tel:{{ settings.phone }}" class="contact-info-val">{{ settings.phone }}</a>
-                <div class="contact-info-sub">{% t 'contact.hours' %}</div>
+                <div class="contact-info-sub">Dush–Shan, 09:00 – 20:00</div>
             </div>
         </div>
 
@@ -169,8 +168,8 @@
             <div class="contact-icon">✈️</div>
             <div>
                 <div class="contact-info-label">Telegram</div>
-                <a href="{{ settings.telegram }}" target="_blank" class="contact-info-val">{% t 'contact.tg_write' %}</a>
-                <div class="contact-info-sub">{% t 'contact.tg_fast' %}</div>
+                <a href="{{ settings.telegram }}" target="_blank" class="contact-info-val">Telegram'da yozing</a>
+                <div class="contact-info-sub">Tez javob beramiz</div>
             </div>
         </div>
 
@@ -187,8 +186,8 @@
             <div class="contact-icon">📍</div>
             <div>
                 <div class="contact-info-label">Manzil</div>
-                <span class="contact-info-val" style="cursor:default;">{{ settings|tfield:'address' }}</span>
-                <div class="contact-info-sub">{% t 'contact.country' %}</div>
+                <span class="contact-info-val" style="cursor:default;">{{ settings.address }}</span>
+                <div class="contact-info-sub">Toshkent, O'zbekiston</div>
             </div>
         </div>
 
@@ -215,8 +214,8 @@
 
     <!-- Form -->
     <div class="contact-form-wrap reveal">
-        <h2>{% t 'contact.form.title' %}</h2>
-        <p>{% t 'contact.form.desc' %}</p>
+        <h2>Buyurtma berish</h2>
+        <p>Xabaringizni yuboring, 1 soat ichida javob beramiz.</p>
 
         <form method="POST">
             {% csrf_token %}
@@ -234,7 +233,9 @@
                 <label>Xabar</label>
                 <textarea name="message" placeholder="Qanday mebel kerak? O'lcham, rang, material..."></textarea>
             </div>
-            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:1rem;">{% t 'common.send' %}</button>
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:1rem;">
+                📤 Xabar yuborish
+            </button>
         </form>
     </div>
 </section>
@@ -242,8 +243,8 @@
 <!-- MAP -->
 <div class="map-section">
     <div class="section-head reveal">
-        <div class="section-label">{% t 'contact.map.label' %}</div>
-        <h2 class="section-title">{% t 'contact.map.title' %}</h2>
+        <div class="section-label">Joylashuv</div>
+        <h2 class="section-title">Bizning manzil</h2>
     </div>
     <div class="map-wrap reveal">
         {% if settings.map_embed %}
@@ -251,9 +252,11 @@
         {% else %}
         <div class="map-placeholder">
             <div class="map-placeholder-icon">📍</div>
-            <p>{{ settings|tfield:'address' }}</p>
+            <p>{{ settings.address }}</p>
             <br>
-            <a href="https://maps.google.com/?q={{ settings|tfield:'address'|urlencode }}" target="_blank" class="btn btn-primary btn-sm">{% t 'contact.map.open' %}</a>
+            <a href="https://maps.google.com/?q={{ settings.address|urlencode }}" target="_blank" class="btn btn-primary btn-sm">
+                Google Maps'da ko'rish →
+            </a>
         </div>
         {% endif %}
     </div>

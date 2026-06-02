@@ -4,7 +4,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.db.models import Count
 from main.models import Product, Category, Portfolio, Review, Order, SiteSettings
-from dashboard.i18n_helpers import fill_product, fill_category, fill_portfolio, fill_settings
 
 
 def dashboard_login(request):
@@ -12,19 +11,12 @@ def dashboard_login(request):
         return redirect('dashboard_home')
 
     if request.method == 'POST':
-        username = (request.POST.get('username') or '').strip()
-        password = request.POST.get('password') or ''
+        username = request.POST.get('username')
+        password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
-
-        if user is not None:
-            if not user.is_active:
-                messages.error(request, "Bu akkaunt bloklangan.")
-            else:
-                login(request, user)
-                next_url = request.POST.get('next') or request.GET.get('next')
-                if next_url:
-                    return redirect(next_url)
-                return redirect('dashboard_home')
+        if user and user.is_staff:
+            login(request, user)
+            return redirect('dashboard_home')
         else:
             messages.error(request, "Login yoki parol noto'g'ri!")
 
@@ -68,17 +60,22 @@ def product_add(request):
     categories = Category.objects.all()
     if request.method == 'POST':
         try:
-            product = Product()
-            fill_product(request.POST, product)
-            if not product.name_uz:
-                raise ValueError("O'zbekcha nom kiritilishi shart")
+            product = Product(
+                name=request.POST['name'],
+                description=request.POST.get('description', ''),
+                material=request.POST.get('material', 'yogoch'),
+                color=request.POST.get('color', ''),
+                category_id=request.POST['category'],
+                is_featured=bool(request.POST.get('is_featured')),
+                is_active=bool(request.POST.get('is_active', True)),
+            )
             price = request.POST.get('price')
             if price:
                 product.price = int(price)
             if 'image' in request.FILES:
                 product.image = request.FILES['image']
             product.save()
-            messages.success(request, f"✅ '{product.name_uz}' mahsuloti qo'shildi!")
+            messages.success(request, f"✅ '{product.name}' mahsuloti qo'shildi!")
             return redirect('dashboard_product_list')
         except Exception as e:
             messages.error(request, f"❌ Xatolik: {e}")
@@ -91,13 +88,19 @@ def product_edit(request, pk):
     categories = Category.objects.all()
     if request.method == 'POST':
         try:
-            fill_product(request.POST, product)
+            product.name = request.POST['name']
+            product.description = request.POST.get('description', '')
+            product.material = request.POST.get('material', 'yogoch')
+            product.color = request.POST.get('color', '')
+            product.category_id = request.POST['category']
+            product.is_featured = bool(request.POST.get('is_featured'))
+            product.is_active = bool(request.POST.get('is_active'))
             price = request.POST.get('price')
             product.price = int(price) if price else None
             if 'image' in request.FILES:
                 product.image = request.FILES['image']
             product.save()
-            messages.success(request, f"✅ '{product.name_uz}' tahrirlandi!")
+            messages.success(request, f"✅ '{product.name}' tahrirlandi!")
             return redirect('dashboard_product_list')
         except Exception as e:
             messages.error(request, f"❌ Xatolik: {e}")
@@ -127,13 +130,13 @@ def category_list(request):
 @login_required
 def category_add(request):
     if request.method == 'POST':
-        name_uz = request.POST.get('name_uz', '').strip()
+        name = request.POST.get('name', '').strip()
         slug = request.POST.get('slug', '').strip()
-        if name_uz and slug:
-            cat = Category(slug=slug, icon=request.POST.get('icon', '🪑'), order=request.POST.get('order', 0) or 0)
-            fill_category(request.POST, cat)
-            cat.save()
-            messages.success(request, f"✅ '{name_uz}' kategoriyasi qo'shildi!")
+        icon = request.POST.get('icon', '🪑')
+        order = request.POST.get('order', 0)
+        if name and slug:
+            Category.objects.create(name=name, slug=slug, icon=icon, order=order)
+            messages.success(request, f"✅ '{name}' kategoriyasi qo'shildi!")
             return redirect('dashboard_category_list')
         messages.error(request, "Nom va slug kiritish shart!")
     return render(request, 'dashboard/category_form.html', {'action': "Qo'shish"})
@@ -143,7 +146,10 @@ def category_add(request):
 def category_edit(request, pk):
     category = get_object_or_404(Category, pk=pk)
     if request.method == 'POST':
-        fill_category(request.POST, category)
+        category.name = request.POST.get('name', category.name)
+        category.slug = request.POST.get('slug', category.slug)
+        category.icon = request.POST.get('icon', category.icon)
+        category.order = request.POST.get('order', category.order)
         category.save()
         messages.success(request, "✅ Kategoriya tahrirlandi!")
         return redirect('dashboard_category_list')
@@ -171,10 +177,11 @@ def portfolio_list(request):
 def portfolio_add(request):
     if request.method == 'POST':
         try:
-            work = Portfolio()
-            fill_portfolio(request.POST, work)
-            if not work.title_uz:
-                raise ValueError("O'zbekcha sarlavha kiritilishi shart")
+            work = Portfolio(
+                title=request.POST['title'],
+                description=request.POST.get('description', ''),
+                is_active=bool(request.POST.get('is_active', True)),
+            )
             if 'image' in request.FILES:
                 work.image = request.FILES['image']
             if 'before_image' in request.FILES:
@@ -191,7 +198,9 @@ def portfolio_add(request):
 def portfolio_edit(request, pk):
     work = get_object_or_404(Portfolio, pk=pk)
     if request.method == 'POST':
-        fill_portfolio(request.POST, work)
+        work.title = request.POST.get('title', work.title)
+        work.description = request.POST.get('description', '')
+        work.is_active = bool(request.POST.get('is_active'))
         if 'image' in request.FILES:
             work.image = request.FILES['image']
         if 'before_image' in request.FILES:
@@ -283,7 +292,13 @@ def review_delete(request, pk):
 def site_settings(request):
     settings_obj, _ = SiteSettings.objects.get_or_create(pk=1)
     if request.method == 'POST':
-        fill_settings(request.POST, settings_obj)
+        settings_obj.phone = request.POST.get('phone', settings_obj.phone)
+        settings_obj.telegram = request.POST.get('telegram', settings_obj.telegram)
+        settings_obj.whatsapp = request.POST.get('whatsapp', settings_obj.whatsapp)
+        settings_obj.address = request.POST.get('address', settings_obj.address)
+        settings_obj.instagram = request.POST.get('instagram', settings_obj.instagram)
+        settings_obj.about_text = request.POST.get('about_text', settings_obj.about_text)
+        settings_obj.map_embed = request.POST.get('map_embed', settings_obj.map_embed)
         settings_obj.save()
         messages.success(request, "✅ Sozlamalar saqlandi!")
         return redirect('dashboard_settings')

@@ -1,6 +1,5 @@
 {% extends 'main/base.html' %}
-{% load jm_i18n %}
-{% block title %}{% t 'portfolio.title' %}{% endblock %}
+{% block title %}Portfolio — Jadid Mebel{% endblock %}
 
 {% block extra_head %}
 <style>
@@ -114,28 +113,24 @@
 {% block content %}
 
 <section class="page-hero">
-    <div class="page-hero-label">{% t 'portfolio.hero.label' %}</div>
-    <h1>Portfolio — <em style="color:var(--gold);font-style:italic;">{% t 'portfolio.hero.title' %}</em></h1>
+    <div class="page-hero-label">Bizning ishlar</div>
+    <h1>Portfolio — <em style="color:var(--gold);font-style:italic;">ishlarimiz</em></h1>
 </section>
 
 {% if works %}
 <div class="portfolio-grid">
     {% for work in works %}
-    <div class="portfolio-item reveal"
-         data-title="{{ work|tfield:'title'|escape }}"
-         data-desc="{{ work|tfield:'description'|escape }}"
-         data-img="{% if work.image %}{{ work.image.url }}{% endif %}"
-         onclick="openModal(this.dataset.title, this.dataset.desc, this.dataset.img)">
+    <div class="portfolio-item reveal" onclick="openModal('{{ work.title|escapejs }}', '{{ work.description|escapejs }}', '{% if work.image %}{{ work.image.url }}{% endif %}')">
         {% if work.image %}
-        <img src="{{ work.image.url }}" alt="{{ work|tfield:'title' }}" class="portfolio-img" loading="lazy">
+        <img src="{{ work.image.url }}" alt="{{ work.title }}" class="portfolio-img" loading="lazy">
         {% else %}
         <div class="portfolio-placeholder">🪑</div>
         {% endif %}
         <div class="portfolio-overlay">
             <div>
-                <div class="portfolio-title">{{ work|tfield:'title' }}</div>
-                {% if work|tfield:'description' %}
-                <div class="portfolio-desc">{{ work|tfield:'description'|truncatechars:60 }}</div>
+                <div class="portfolio-title">{{ work.title }}</div>
+                {% if work.description %}
+                <div class="portfolio-desc">{{ work.description|truncatechars:60 }}</div>
                 {% endif %}
             </div>
         </div>
@@ -145,7 +140,7 @@
 {% else %}
 <div class="empty-portfolio">
     <div style="font-size:4rem;margin-bottom:1.5rem;opacity:0.4;">🖼️</div>
-    <h3 style="font-family:var(--font-display);font-size:1.8rem;font-weight:300;color:var(--gray);margin-bottom:1rem;">{% t 'portfolio.empty' %}</h3>
+    <h3 style="font-family:var(--font-display);font-size:1.8rem;font-weight:300;color:var(--gray);margin-bottom:1rem;">Hozircha portfolio yo'q</h3>
     <p style="color:var(--gray);">Tez orada real ishlarimiz qo'shiladi!</p>
 </div>
 {% endif %}
@@ -153,10 +148,12 @@
 <!-- CTA after portfolio -->
 <section class="section section-cream" style="text-align:center;">
     <div class="reveal">
-        <div class="section-label">{% t 'portfolio.cta.label' %}</div>
-        <h2 class="section-title" style="margin-bottom:1.5rem;">{% t 'portfolio.cta.title' %}</h2>
-        <p style="color:var(--gray);margin-bottom:2.5rem;max-width:400px;margin-left:auto;margin-right:auto;">{% t 'portfolio.cta.desc' %}</p>
-        <a href="{% url 'contact' %}" class="btn btn-primary">{% t 'nav.order' %}</a>
+        <div class="section-label">Sizning navbatingiz</div>
+        <h2 class="section-title" style="margin-bottom:1.5rem;">Siz ham bu ro'yxatda bo'ling</h2>
+        <p style="color:var(--gray);margin-bottom:2.5rem;max-width:400px;margin-left:auto;margin-right:auto;">
+            Bugun buyurtma bering va bizning portfolio'mizni bezating!
+        </p>
+        <a href="{% url 'contact' %}" class="btn btn-primary">Buyurtma berish</a>
     </div>
 </section>
 

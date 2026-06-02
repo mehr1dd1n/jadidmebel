@@ -1,78 +1,144 @@
 {% extends 'main/base.html' %}
-{% load jm_i18n %}
-{% block title %}{% t 'products.title' %}{% endblock %}
+{% block title %}Mahsulotlar — Jadid Mebel{% endblock %}
 
 {% block extra_head %}
 <style>
-.page-hero { background: var(--charcoal); padding: 5rem 5% 4rem; text-align: center; }
+.page-hero {
+    background: var(--charcoal);
+    padding: 5rem 5% 4rem;
+    text-align: center;
+}
 .page-hero-label { color: var(--gold); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1rem; }
 .page-hero h1 { font-family: var(--font-display); font-size: clamp(2.2rem, 4vw, 3.5rem); font-weight: 300; color: var(--cream); }
-.filters-bar { background: var(--cream); padding: 2rem 5%; border-bottom: 1px solid var(--border); position: sticky; top: 80px; z-index: 100; }
-.filters-inner { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-.filter-label { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray); margin-right: 0.5rem; }
-.filter-chip { display: inline-flex; padding: 0.45rem 1rem; border: 1.5px solid var(--light-gray); border-radius: 100px; font-size: 0.8rem; color: var(--gray); text-decoration: none; transition: all var(--transition); background: #fff; }
-.filter-chip:hover, .filter-chip.active { border-color: var(--gold); color: var(--charcoal); background: rgba(200,169,110,0.08); }
+
+.filters-bar {
+    background: var(--cream);
+    padding: 2rem 5%;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 80px;
+    z-index: 100;
+}
+.filters-inner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.filter-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-right: 0.5rem;
+}
+.filter-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.45rem 1rem;
+    border: 1.5px solid var(--light-gray);
+    border-radius: 100px;
+    font-size: 0.8rem;
+    color: var(--gray);
+    text-decoration: none;
+    transition: all var(--transition);
+    background: #fff;
+    cursor: pointer;
+}
+.filter-chip:hover, .filter-chip.active {
+    border-color: var(--gold);
+    color: var(--charcoal);
+    background: rgba(200,169,110,0.08);
+}
 .filter-chip.active { font-weight: 500; }
-.filter-divider { width: 1px; height: 24px; background: var(--border); margin: 0 0.5rem; }
+
+.filter-divider {
+    width: 1px;
+    height: 24px;
+    background: var(--border);
+    margin: 0 0.5rem;
+}
+
 .products-section { padding: 4rem 5%; }
-.products-count { font-size: 0.8rem; color: var(--gray); margin-bottom: 2rem; }
-.empty-state { text-align: center; padding: 6rem 2rem; }
+.products-count {
+    font-size: 0.8rem;
+    color: var(--gray);
+    margin-bottom: 2rem;
+    letter-spacing: 0.05em;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 6rem 2rem;
+}
 .empty-state-icon { font-size: 4rem; margin-bottom: 1.5rem; opacity: 0.4; }
-.empty-state h3 { font-family: var(--font-display); font-size: 1.8rem; font-weight: 300; color: var(--gray); margin-bottom: 1rem; }
+.empty-state h3 {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: var(--gray);
+    margin-bottom: 1rem;
+}
 </style>
 {% endblock %}
 
 {% block content %}
+
 <section class="page-hero">
-    <div class="page-hero-label">{% t 'products.hero.label' %}</div>
-    <h1>{% t 'products.hero.title' %}</h1>
+    <div class="page-hero-label">Bizning kolleksiya</div>
+    <h1>Barcha <em style="color:var(--gold);font-style:italic;">mahsulotlar</em></h1>
 </section>
 
 <div class="filters-bar">
     <div class="filters-inner">
-        <span class="filter-label">{% t 'products.filter.cat' %}:</span>
-        <a href="{% url 'products' %}" class="filter-chip {% if not active_category %}active{% endif %}">{% t 'common.all' %}</a>
+        <span class="filter-label">Kategoriya:</span>
+        <a href="{% url 'products' %}" class="filter-chip {% if not active_category %}active{% endif %}">
+            Barchasi
+        </a>
         {% for cat in categories %}
         <a href="{% url 'products' %}?category={{ cat.slug }}" class="filter-chip {% if active_category == cat %}active{% endif %}">
-            {{ cat.icon }} {{ cat|tfield:'name' }}
+            {{ cat.icon }} {{ cat.name }}
         </a>
         {% endfor %}
+
         <div class="filter-divider"></div>
-        <span class="filter-label">{% t 'products.filter.mat' %}:</span>
-        <a href="{% url 'products' %}{% if active_category %}?category={{ active_category.slug }}{% endif %}" class="filter-chip {% if not active_material %}active{% endif %}">{% t 'common.all' %}</a>
-        <a href="?{% if active_category %}category={{ active_category.slug }}&{% endif %}material=yogoch" class="filter-chip {% if active_material == 'yogoch' %}active{% endif %}">{% t 'mat.yogoch' %}</a>
-        <a href="?{% if active_category %}category={{ active_category.slug }}&{% endif %}material=mdf" class="filter-chip {% if active_material == 'mdf' %}active{% endif %}">{% t 'mat.mdf' %}</a>
-        <a href="?{% if active_category %}category={{ active_category.slug }}&{% endif %}material=metall" class="filter-chip {% if active_material == 'metall' %}active{% endif %}">{% t 'mat.metall' %}</a>
+
+        <span class="filter-label">Material:</span>
+        <a href="{% url 'products' %}{% if active_category %}?category={{ active_category.slug }}{% endif %}" class="filter-chip {% if not active_material %}active{% endif %}">Barchasi</a>
+        <a href="?{% if active_category %}category={{ active_category.slug }}&{% endif %}material=yogoch" class="filter-chip {% if active_material == 'yogoch' %}active{% endif %}">🌳 Yog'och</a>
+        <a href="?{% if active_category %}category={{ active_category.slug }}&{% endif %}material=mdf" class="filter-chip {% if active_material == 'mdf' %}active{% endif %}">📦 MDF</a>
+        <a href="?{% if active_category %}category={{ active_category.slug }}&{% endif %}material=metall" class="filter-chip {% if active_material == 'metall' %}active{% endif %}">⚙️ Metall</a>
     </div>
 </div>
 
 <section class="products-section">
     <p class="products-count">
-        {% if active_category %}{{ active_category|tfield:'name' }} · {% endif %}
-        {{ products.count }} {% t 'products.found' %}
+        {% if active_category %}{{ active_category.name }} · {% endif %}
+        {{ products.count }} ta mahsulot topildi
     </p>
+
     {% if products %}
     <div class="products-grid">
         {% for product in products %}
         <div class="product-card reveal">
             <div class="product-card-img-wrap">
                 {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product|tfield:'name' }}" class="product-card-img" loading="lazy">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-card-img" loading="lazy">
                 {% else %}
                 <div class="product-card-img" style="display:flex;align-items:center;justify-content:center;font-size:4rem;background:var(--cream);">🪑</div>
                 {% endif %}
-                <span class="product-badge">{{ product.category.icon }} {{ product.category|tfield:'name' }}</span>
+                <span class="product-badge">{{ product.category.icon }} {{ product.category.name }}</span>
             </div>
             <div class="product-card-body">
-                <div class="product-card-cat">{{ product.get_material_display }}{% if product|tfield:'color' %} · {{ product|tfield:'color' }}{% endif %}</div>
-                <div class="product-card-name">{{ product|tfield:'name' }}</div>
-                {% if product|tfield:'description' %}
-                <div class="product-card-meta">{{ product|tfield:'description'|truncatechars:80 }}</div>
+                <div class="product-card-cat">{{ product.get_material_display }}{% if product.color %} · {{ product.color }}{% endif %}</div>
+                <div class="product-card-name">{{ product.name }}</div>
+                {% if product.description %}
+                <div class="product-card-meta">{{ product.description|truncatechars:80 }}</div>
                 {% endif %}
                 <div class="product-card-price">{{ product.get_price_display }}</div>
                 <div class="product-card-actions">
-                    <a href="{% url 'product_detail' product.pk %}" class="btn btn-primary btn-sm">{% t 'common.details' %}</a>
-                    <a href="{{ settings.telegram }}" target="_blank" class="btn btn-outline btn-sm">{% t 'common.order_tg' %}</a>
+                    <a href="{% url 'product_detail' product.pk %}" class="btn btn-primary btn-sm">Batafsil</a>
+                    <a href="{{ settings.telegram }}" target="_blank" class="btn btn-outline btn-sm">✈️ Buyurtma</a>
                 </div>
             </div>
         </div>
@@ -81,10 +147,11 @@
     {% else %}
     <div class="empty-state">
         <div class="empty-state-icon">🔍</div>
-        <h3>{% t 'products.empty.title' %}</h3>
-        <p style="color:var(--gray);margin-bottom:2rem;">{% t 'products.empty.desc' %}</p>
-        <a href="{% url 'products' %}" class="btn btn-primary">{% t 'nav.products' %}</a>
+        <h3>Mahsulot topilmadi</h3>
+        <p style="color:var(--gray);margin-bottom:2rem;">Boshqa filtr tanlang yoki barcha mahsulotlarni ko'ring.</p>
+        <a href="{% url 'products' %}" class="btn btn-primary">Barcha mahsulotlar</a>
     </div>
     {% endif %}
 </section>
+
 {% endblock %}
