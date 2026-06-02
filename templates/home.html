@@ -13,26 +13,63 @@
     overflow: hidden;
     background: var(--charcoal);
 }
-.hero-bg {
+
+/* ===== KARUSEL FON ===== */
+.hero-carousel {
     position: absolute;
     inset: 0;
-    background:
-        radial-gradient(ellipse 70% 70% at 80% 50%, rgba(200,169,110,0.08) 0%, transparent 70%),
-        linear-gradient(135deg, #0F0F0D 0%, #1A1A18 50%, #0F0F0D 100%);
+    z-index: 0;
+    overflow: hidden;
 }
+
+.carousel-slides {
+    position: absolute;
+    inset: 0;
+}
+
+.carousel-slide {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+}
+
+.carousel-slide.active {
+    opacity: 1;
+}
+
+/* Overlay - rasm ustiga tushadigan qoraytirgich */
+.carousel-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(15,15,13,0.85) 0%, rgba(26,26,24,0.7) 50%, rgba(15,15,13,0.85) 100%);
+    z-index: 1;
+}
+
+/* Eski gradient fonni o'chiramiz */
+.hero-bg {
+    display: none;
+}
+
 .hero-grid {
     position: absolute;
     inset: 0;
     background-image: linear-gradient(rgba(200,169,110,0.04) 1px, transparent 1px),
                       linear-gradient(90deg, rgba(200,169,110,0.04) 1px, transparent 1px);
     background-size: 60px 60px;
+    z-index: 2;
 }
+
 .hero-content {
     position: relative;
-    z-index: 2;
+    z-index: 3;
     padding: 0 5%;
     max-width: 700px;
 }
+
 .hero-label {
     font-size: 0.7rem;
     letter-spacing: 0.3em;
@@ -77,7 +114,7 @@
     right: 5%;
     display: flex;
     gap: 3rem;
-    z-index: 2;
+    z-index: 3;
 }
 .hero-stat { text-align: right; }
 .hero-stat-num {
@@ -92,6 +129,32 @@
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: rgba(245,240,232,0.5);
+}
+
+/* Karusel indikator nuqtalari */
+.carousel-dots {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.75rem;
+    z-index: 3;
+}
+
+.carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(245,240,232,0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.carousel-dot.active {
+    background: var(--gold);
+    width: 24px;
+    border-radius: 4px;
 }
 
 /* ─── MARQUEE ─── */
@@ -247,6 +310,7 @@
     .about-strip-left { padding: 3rem 4%; }
     .about-strip-right { padding: 3rem 4%; }
     .hero-stats { display: none; }
+    .carousel-dots { bottom: 1rem; }
 }
 </style>
 {% endblock %}
@@ -255,7 +319,18 @@
 
 <!-- HERO -->
 <section class="hero">
-    <div class="hero-bg"></div>
+    <!-- Karusel fon -->
+    <div class="hero-carousel">
+        <div class="carousel-slides">
+            <div class="carousel-slide active" style="background-image: url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1920&q=80');"></div>
+            <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=1920&q=80');"></div>
+            <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1586023492125-27b2c045efd8?w=1920&q=80');"></div>
+            <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1920&q=80');"></div>
+            <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1616486338812-3aadae4b9ab1?w=1920&q=80');"></div>
+        </div>
+        <div class="carousel-overlay"></div>
+    </div>
+
     <div class="hero-grid"></div>
 
     <div class="hero-content">
@@ -287,6 +362,15 @@
             <div class="hero-stat-num">100%</div>
             <div class="hero-stat-label">{% t 'home.stat.guarantee' %}</div>
         </div>
+    </div>
+
+    <!-- Karusel nuqtalari -->
+    <div class="carousel-dots">
+        <div class="carousel-dot active" data-index="0"></div>
+        <div class="carousel-dot" data-index="1"></div>
+        <div class="carousel-dot" data-index="2"></div>
+        <div class="carousel-dot" data-index="3"></div>
+        <div class="carousel-dot" data-index="4"></div>
     </div>
 </section>
 
@@ -458,4 +542,73 @@
     </div>
 </section>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function() {
+    // Karusel funksiyasi
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.carousel-dot');
+    let currentIndex = 0;
+    let intervalId = null;
+    const intervalTime = 4000; // 4 sekund
+
+    function showSlide(index) {
+        // Indeksni to'g'irlash
+        if (index >= slides.length) index = 0;
+        if (index < 0) index = slides.length - 1;
+
+        // Barcha slaydlarni yashirish
+        slides.forEach(slide => {
+            slide.classList.remove('active');
+        });
+
+        // Barcha nuqtalarni o'chirish
+        dots.forEach(dot => {
+            dot.classList.remove('active');
+        });
+
+        // Yangi slayd va nuqtani faollashtirish
+        slides[index].classList.add('active');
+        dots[index].classList.add('active');
+        currentIndex = index;
+    }
+
+    function nextSlide() {
+        showSlide(currentIndex + 1);
+    }
+
+    function startCarousel() {
+        if (intervalId) clearInterval(intervalId);
+        intervalId = setInterval(nextSlide, intervalTime);
+    }
+
+    function stopCarousel() {
+        if (intervalId) {
+            clearInterval(intervalId);
+            intervalId = null;
+        }
+    }
+
+    // Nuqtalarga click event
+    dots.forEach((dot, idx) => {
+        dot.addEventListener('click', () => {
+            stopCarousel();
+            showSlide(idx);
+            startCarousel();
+        });
+    });
+
+    // Hover bo'lganda karuselni to'xtatish
+    const heroSection = document.querySelector('.hero');
+    if (heroSection) {
+        heroSection.addEventListener('mouseenter', stopCarousel);
+        heroSection.addEventListener('mouseleave', startCarousel);
+    }
+
+    // Karuselni ishga tushirish
+    startCarousel();
+})();
+</script>
 {% endblock %}
